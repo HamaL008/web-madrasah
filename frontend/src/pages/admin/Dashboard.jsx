@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, UserCheck, Users, Edit,
-  LogOut, Eye, BookOpen, Check, AlertCircle, Menu, X, Settings, Images
+  LogOut, Eye, BookOpen, Check, AlertCircle, Menu, X, Settings, Images, Award
 } from 'lucide-react'
 import api from '../../api/axios'
 import PanelOverview from './panels/PanelOverview'
@@ -11,12 +11,16 @@ import PanelDatabase from './panels/PanelDatabase'
 import PanelContent from './panels/PanelContent'
 import PanelPPDBSetting from './panels/PanelPPDBSetting'
 import PanelGallery from './panels/PanelGallery'
+import PanelNews from './panels/PanelNews'
+import PanelProgram from './panels/PanelProgram'
 
 const navItems = [
   { key: 'overview',      label: 'Ringkasan Data',      icon: LayoutDashboard },
   { key: 'ppdb',          label: 'Pendaftar PPDB',       icon: UserCheck },
   { key: 'ppdb-setting',  label: 'Periode PPDB',         icon: Settings },
   { key: 'gallery',       label: 'Kelola Galeri',        icon: Images },
+  { key: 'news',          label: 'Kelola Berita',        icon: BookOpen },
+  { key: 'program',       label: 'Kelola Program',       icon: Award },
   { key: 'database',      label: 'Database Internal',    icon: Users },
   { key: 'content',       label: 'Kelola Konten Web',    icon: Edit },
 ]
@@ -167,6 +171,8 @@ export default function Dashboard() {
           {activePanel === 'ppdb'          && <PanelPPDB notify={triggerNotification} />}
           {activePanel === 'ppdb-setting'  && <PanelPPDBSetting notify={triggerNotification} />}
           {activePanel === 'gallery'       && <PanelGallery notify={triggerNotification} />}
+          {activePanel === 'news'          && <PanelNews notify={triggerNotification} />}
+          {activePanel === 'program'       && <PanelProgram notify={triggerNotification} />}
           {activePanel === 'database'      && <PanelDatabase notify={triggerNotification} />}
           {activePanel === 'content'       && <PanelContent notify={triggerNotification} />}
         </main>

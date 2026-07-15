@@ -1,19 +1,22 @@
 import { useState, useEffect, useRef } from 'react'
 import { Menu, X, BookOpen } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const navLinks = [
-  { name: 'Beranda',     href: 'beranda' },
-  { name: 'Profil',      href: 'sejarah' },
-  { name: 'Visi & Misi', href: 'visi-misi' },
-  { name: 'Biaya',       href: 'biaya' },
-  { name: 'Galeri',      href: 'galeri' },
-  { name: 'Kontak',      href: 'kontak' },
+  { name: 'Beranda',  href: 'beranda',   page: null },
+  { name: 'Profil',   href: 'sejarah',   page: null },
+  { name: 'Program',  href: 'program',   page: null },
+  { name: 'Guru',     href: 'guru',      page: null },
+  { name: 'Galeri',   href: 'galeri',    page: null },
+  { name: 'Berita',   href: 'berita',    page: null },
+  { name: 'Kontak',   href: 'kontak',    page: null },
 ]
 
 export default function Navbar({ logoName }) {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const headerRef = useRef(null)
+  const navigate  = useNavigate()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -23,24 +26,25 @@ export default function Navbar({ logoName }) {
 
   const scrollToSection = (id, closeMenu = false) => {
     if (closeMenu) setIsOpen(false)
-
     const target = document.getElementById(id)
     if (!target) return
-
     const headerHeight = headerRef.current?.offsetHeight ?? 65
     const targetTop = target.getBoundingClientRect().top + window.scrollY
-
-    // Beranda → scroll ke paling atas, section lain → offset tepat di bawah navbar
     const offset = id === 'beranda' ? 0 : targetTop - headerHeight
-
     window.scrollTo({ top: offset, behavior: 'smooth' })
+  }
+
+  const handleNav = (link, closeMenu = false) => {
+    if (closeMenu) setIsOpen(false)
+    if (link.page) { navigate(link.page); return }
+    scrollToSection(link.href)
   }
 
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled ? 'bg-emerald-950/95 backdrop-blur-md shadow-md py-3' : 'bg-emerald-950 py-4'
+      className={`sticky top-0 z-50 transition-all duration-300 bg-emerald-950/90 backdrop-blur-md border-b border-emerald-800/50 shadow-md ${
+        scrolled ? 'py-3' : 'py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -64,7 +68,7 @@ export default function Navbar({ logoName }) {
           {navLinks.map((link) => (
             <button
               key={link.name}
-              onClick={() => scrollToSection(link.href)}
+              onClick={() => handleNav(link)}
               className="text-emerald-100 hover:text-amber-300 text-sm font-medium transition-colors"
             >
               {link.name}
@@ -99,7 +103,7 @@ export default function Navbar({ logoName }) {
           {navLinks.map((link) => (
             <button
               key={link.name}
-              onClick={() => scrollToSection(link.href, true)}
+              onClick={() => handleNav(link, true)}
               className="text-emerald-100 hover:text-amber-300 text-base font-semibold py-1.5 transition-colors text-left"
             >
               {link.name}

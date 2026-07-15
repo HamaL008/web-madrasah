@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gallery extends Model
 {
-    protected $fillable = ['title', 'description', 'image_path', 'urutan'];
+    protected $fillable = ['title', 'description', 'image_path', 'urutan', 'category'];
 
     /**
      * URL publik gambar, atau null jika belum ada gambar.

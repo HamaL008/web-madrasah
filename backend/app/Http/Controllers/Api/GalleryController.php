@@ -11,9 +11,15 @@ use Illuminate\Support\Str;
 class GalleryController extends Controller
 {
     // GET /api/gallery — public
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Gallery::orderBy('urutan')->orderBy('created_at', 'desc')->get());
+        $query = Gallery::orderBy('urutan')->orderBy('created_at', 'desc');
+
+        if ($request->filled('category') && $request->category !== 'Semua') {
+            $query->where('category', $request->category);
+        }
+
+        return response()->json($query->get());
     }
 
     // POST /api/admin/gallery — protected, multipart/form-data
@@ -22,8 +28,9 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
-            'image'       => 'nullable|image|max:2048', // max 2MB
+            'image'       => 'nullable|image|max:5120',
             'urutan'      => 'nullable|integer',
+            'category'    => 'nullable|string|max:100',
         ]);
 
         $imagePath = null;
@@ -39,6 +46,7 @@ class GalleryController extends Controller
             'description' => $validated['description'] ?? null,
             'image_path'  => $imagePath,
             'urutan'      => $validated['urutan'] ?? 0,
+            'category'    => $validated['category'] ?? 'Umum',
         ]);
 
         return response()->json($gallery, 201);
@@ -50,8 +58,9 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string|max:500',
-            'image'       => 'nullable|image|max:2048',
+            'image'       => 'nullable|image|max:5120',
             'urutan'      => 'nullable|integer',
+            'category'    => 'nullable|string|max:100',
         ]);
 
         if ($request->hasFile('image')) {
@@ -80,3 +89,4 @@ class GalleryController extends Controller
         return response()->json(['message' => 'Foto galeri berhasil dihapus.']);
     }
 }
+

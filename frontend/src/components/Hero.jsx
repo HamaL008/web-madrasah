@@ -1,65 +1,127 @@
-import { ArrowRight, Info, Calendar, Heart } from 'lucide-react'
+import { ArrowRight, Star } from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
-export default function Hero({ heroTitle, heroSubtitle, heroBackground, sambutan }) {
-  const bgStyle = heroBackground ? { backgroundImage: `url(${heroBackground})` } : {}
+function useCountUp(target, duration = 1500, start = false) {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!start) return
+    const num = parseInt(target.replace(/\D/g, "")) || 0
+    const suffix = target.replace(/[\d]/g, "")
+    let startTime = null
+    const step = (timestamp) => {
+      if (!startTime) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / duration, 1)
+      setCount(Math.floor(progress * num) + suffix)
+      if (progress < 1) requestAnimationFrame(step)
+      else setCount(target)
+    }
+    requestAnimationFrame(step)
+  }, [start, target, duration])
+  return count
+}
+
+const STATS = [
+  { val: "350+", label: "Santri Aktif" },
+  { val: "27+", label: "Tenaga Pendidik" },
+  { val: "100%", label: "Kelulusan" },
+  { val: "2012", label: "Tahun Berdiri" },
+]
+
+function StatItem({ val, label, started }) {
+  const count = useCountUp(val, 1400, started)
+  return (
+    <div>
+      <p className="text-2xl font-extrabold text-amber-300">{count || val}</p>
+      <p className="text-[11px] text-slate-400 uppercase tracking-widest font-semibold mt-0.5">{label}</p>
+    </div>
+  )
+}
+
+export default function Hero({ heroTitle, heroSubtitle, heroBackground }) {
+  const statsRef = useRef(null)
+  const [statsStarted, setStatsStarted] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setStatsStarted(true) },
+      { threshold: 0.5 }
+    )
+    if (statsRef.current) observer.observe(statsRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <section id="beranda"
-      className="relative min-h-[90vh] flex items-center justify-center py-20 px-4 overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950 text-white"
-      style={bgStyle}>
-      <div className="absolute inset-0 bg-emerald-950/85 z-10" />
-      {!heroBackground && (
-        <div className="absolute inset-0 opacity-10 z-10 pointer-events-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0l40 40-40 40L0 40z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3Cpath d='M40 10l30 30-30 30-30-30z' fill='%23d4af37' fill-opacity='0.15' fill-rule='evenodd'/%3E%3C/svg%3E")`,
-            backgroundSize: '40px 40px'
-          }} />
-      )}
-      <div className="absolute top-1/4 left-10 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl z-10 pointer-events-none" />
-      <div className="absolute bottom-1/4 right-10 w-80 h-80 rounded-full bg-amber-500/10 blur-3xl z-10 pointer-events-none" />
+    <section
+      id="beranda"
+      className="relative flex items-center justify-center overflow-hidden bg-emerald-950"
+      style={{ minHeight: "90vh" }}
+    >
+      {/* Pattern Overlay Background */}
+      <div className="absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      />
+      <div className="absolute inset-0 bg-emerald-950/65" />
 
-      <div className="max-w-7xl mx-auto w-full relative z-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        {/* Left */}
-        <div className="lg:col-span-7 flex flex-col items-start space-y-6">
-          <div className="inline-flex items-center gap-2 bg-emerald-800/40 border border-emerald-700/50 px-3.5 py-1.5 rounded-full text-amber-300 text-sm font-semibold">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-            Pendaftaran Santri Baru Dibuka!
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-white">
-            {heroTitle}
-          </h1>
-          <p className="text-slate-200 text-base md:text-lg leading-relaxed max-w-2xl">{heroSubtitle}</p>
-          <div className="flex flex-col sm:flex-row gap-4 pt-2">
-            <a href="#ppdb"
-              className="bg-amber-400 hover:bg-amber-500 text-emerald-950 px-8 py-3.5 rounded-xl font-bold shadow-lg hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
-              Daftar Sekarang <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="#sejarah"
-              className="bg-emerald-900/60 hover:bg-emerald-800/60 border border-emerald-700/50 text-white px-8 py-3.5 rounded-xl font-semibold hover:scale-[1.02] transition-all flex items-center justify-center gap-2 backdrop-blur-sm">
-              Pelajari Profil <Info className="w-4 h-4" />
-            </a>
-          </div>
-        </div>
+      {/* Glow blobs */}
+      <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none animate-pulse-slow" />
+      <div className="absolute bottom-1/3 right-1/4 w-64 h-64 rounded-full bg-amber-400/10 blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: "1.5s" }} />
 
-        {/* Right - Sambutan card */}
-        <div className="lg:col-span-5">
-          <div className="bg-white/10 backdrop-blur-md text-slate-100 p-6 md:p-8 rounded-2xl shadow-2xl border border-white/10 relative">
-            <div className="absolute top-0 right-0 translate-x-4 -translate-y-4 bg-amber-400 text-emerald-950 p-2.5 rounded-xl shadow-md hidden sm:block">
-              <Heart className="w-5 h-5 fill-emerald-950" />
-            </div>
-            <h3 className="text-amber-300 font-bold text-xs uppercase tracking-widest mb-1.5">Sambutan Kepala Madrasah</h3>
-            <h4 className="text-lg font-bold text-white mb-4">Hj. Maryam, S.Pd.I</h4>
-            <div className="text-slate-200 text-xs md:text-sm leading-relaxed space-y-3 max-h-64 overflow-y-auto pr-2">
-              {sambutan.split('\n\n').map((p, i) => <p key={i}>{p}</p>)}
-            </div>
-            <div className="mt-6 pt-5 border-t border-emerald-800/60 flex items-center justify-between text-[11px] text-emerald-300">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-amber-400" /> Bogor, Jawa Barat
-              </span>
-              <span className="font-semibold text-amber-300">Yayasan Ponpes Hikmatul Furqon</span>
+      {/* Content Container Split-Screen */}
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+          {/* Kolom Kiri: Teks & CTA */}
+          <div className="text-left text-white">
+
+            {/* Judul Utama */}
+            <h1 className="animate-fade-up-delay-1 text-5xl lg:text-6xl font-extrabold leading-tight mb-5 drop-shadow-lg">
+              {heroTitle?.includes("Qur'ani") ? (
+                <>
+                  {heroTitle.split("Qur'ani")[0]}
+                  <span className="text-amber-400">Qur'ani</span>
+                  {heroTitle.split("Qur'ani")[1]}
+                </>
+              ) : (
+                heroTitle
+              )}
+            </h1>
+
+            {/* Subtitle */}
+            <p className="animate-fade-up-delay-2 text-slate-200 text-base md:text-lg leading-relaxed mb-10 max-w-lg">
+              {heroSubtitle}
+            </p>
+
+            {/* Stats */}
+            <div ref={statsRef}
+              className="animate-fade-up-delay-4 flex flex-wrap justify-start gap-8 pt-6 border-t border-white/15">
+              {STATS.map(({ val, label }) => (
+                <StatItem key={label} val={val} label={label} started={statsStarted} />
+              ))}
             </div>
           </div>
+
+          {/* Kolom Kanan: Visual & Kartu Melayang */}
+          <div className="relative animate-fade-in-scale w-full max-w-md mx-auto lg:max-w-none">
+            <div className="relative aspect-[4/5] rounded-[2rem] shadow-2xl overflow-hidden border-4 border-emerald-900/40">
+              <img
+                src={heroBackground || "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800"}
+                alt="Madrasah"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-emerald-950/10 mix-blend-overlay" />
+            </div>
+          </div>
+
         </div>
+      </div>
+
+      {/* Wave Separator */}
+      <div className="absolute bottom-0 left-0 right-0 z-20">
+        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
+          <path d="M0 100L60 88C120 76 240 52 360 46C480 40 600 52 720 58C840 64 960 64 1080 58C1200 52 1320 40 1380 34L1440 28V100H0Z" fill="#ffffff" />
+        </svg>
       </div>
     </section>
   )

@@ -1,25 +1,33 @@
 import { useState, useEffect } from 'react'
+import { useRevealObserver } from '../hooks/useReveal'
 import RunningText from '../components/RunningText'
 import Navbar from '../components/Navbar'
 import Hero from '../components/Hero'
 import ProfileSections from '../components/ProfileSections'
+import NewsSection from '../components/NewsSection'
+import BiayaSection from '../components/BiayaSection'
+import SambutanSection from '../components/SambutanSection'
 import PPDBForm from '../components/PPDBForm'
 import Footer from '../components/Footer'
 import api from '../api/axios'
 
 export default function Home() {
-  const [content, setContent] = useState(null)
-  const [galeri, setGaleri]   = useState([])
-  const [loading, setLoading] = useState(true)
+  useRevealObserver()
+  const [content, setContent]   = useState(null)
+  const [galeri, setGaleri]     = useState([])
+  const [teachers, setTeachers] = useState([])
+  const [loading, setLoading]   = useState(true)
 
   useEffect(() => {
     Promise.all([
       api.get('/content'),
       api.get('/gallery'),
+      api.get('/teachers'),
     ])
-      .then(([contentRes, galleryRes]) => {
+      .then(([contentRes, galleryRes, teacherRes]) => {
         setContent(contentRes.data)
         setGaleri(galleryRes.data ?? [])
+        setTeachers(teacherRes.data ?? [])
       })
       .catch((err) => console.error('Gagal memuat konten:', err))
       .finally(() => setLoading(false))
@@ -48,7 +56,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen w-full max-w-[100vw]">
       <RunningText text={content.announcement} />
       <Navbar logoName={content.logo_name} />
       <main className="flex-1">
@@ -58,6 +66,7 @@ export default function Home() {
           heroBackground={content.hero_background}
           sambutan={content.sambutan}
         />
+        <SambutanSection sambutan={content.sambutan} />
         <ProfileSections
           sejarah={content.sejarah}
           visi={content.visi}
@@ -66,8 +75,10 @@ export default function Home() {
           biaya={content.biaya}
           driveLegalitas={content.drive_legalitas}
           galeri={galeri}
+          teachers={teachers}
         />
-        <PPDBForm panitiaWa={content.whatsapp} />
+        <NewsSection />
+        <PPDBForm panitiaWa={content.whatsapp} biaya={content.biaya ?? []} />
       </main>
       <Footer logoName={content.logo_name} kontak={kontak} />
     </div>

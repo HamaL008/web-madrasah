@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Teacher extends Model
+class Program extends Model
 {
-    protected $fillable = ['nuptk', 'nama', 'mapel', 'jabatan', 'image_path', 'quotes'];
+    protected $fillable = ['title', 'description', 'icon', 'urutan', 'image_path'];
 
     protected $appends = ['image_url'];
 
