@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Lock, AlertCircle } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import api from '../../api/axios'
+import logoImg from '../../assets/logo.png'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -31,12 +32,10 @@ export default function Login() {
       <div className="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-amber-500/10 blur-2xl pointer-events-none" />
 
       <div className="bg-white/95 backdrop-blur-md p-6 md:p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 relative z-10">
-        <div className="inline-flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-500 p-3 rounded-2xl text-emerald-950 shadow-md">
-          <Lock className="w-6 h-6" />
-        </div>
+        <img src={logoImg} alt="Logo Madrasah" className="w-20 h-20 object-contain mx-auto" />
         <div>
-          <h1 className="text-xl md:text-2xl font-extrabold text-emerald-950">Portal Administrator</h1>
-          <p className="text-slate-500 text-xs mt-1">Madrasah Miftahul Ulum - Ponpes Hikmatul Furqon</p>
+          <h1 className="font-sans text-xl md:text-2xl font-extrabold text-emerald-950">Portal Administrator</h1>
+          <p className="font-serif text-slate-500 text-xs mt-1">Madrasah Diniyyah Miftahul Ulum</p>
         </div>
 
         {error && (

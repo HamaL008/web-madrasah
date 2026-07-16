@@ -20,6 +20,18 @@ class SiteContentController extends Controller
         return response()->json($content);
     }
 
+    // GET /api/stats — public
+    public function stats()
+    {
+        $studentsCount = \App\Models\Student::count();
+        $teachersCount = \App\Models\Teacher::count();
+
+        return response()->json([
+            'students' => $studentsCount,
+            'teachers' => $teachersCount,
+        ]);
+    }
+
     // PUT /api/admin/content — protected
     public function update(Request $request)
     {
@@ -30,6 +42,7 @@ class SiteContentController extends Controller
             'hero_subtitle'   => 'required|string',
             'hero_background' => 'nullable|string',
             'sambutan'        => 'required|string',
+            'sambutan_image'  => 'nullable|string',
             'sejarah'         => 'required|string',
             'visi'            => 'required|string',
             'misi'            => 'required|array',

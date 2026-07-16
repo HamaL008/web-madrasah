@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Check, X, Trash2, FileSpreadsheet, Search, Clock, CheckCircle, XCircle, Users, FileQuestion } from 'lucide-react'
 import api from '../../../api/axios'
+import * as XLSX from 'xlsx'
 
 const STATUS_TABS = [
   { key: 'Semua',       label: 'Semua',        icon: Users,        color: 'text-slate-600'  },
@@ -125,15 +126,23 @@ export default function PanelPPDB({ notify }) {
   }
 
   const exportExcel = async () => {
-    const { default: XLSX } = await import('xlsx')
     const source = filtered.length ? filtered : registrants
     if (!source.length) { notify('Data kosong.', 'error'); return }
-    const data = source.map((r, i) => ({
-      'No': i + 1, 'Nama': r.nama, 'Tempat Lahir': r.tempat_lahir,
-      'Tanggal Lahir': r.tanggal_lahir, 'Alamat': r.alamat,
-      'Orang Tua': r.nama_ortu, 'WhatsApp': r.whatsapp, 'Status': r.status,
-      'Tanggal Daftar': r.created_at,
-    }))
+    const data = source.map((r, i) => {
+      const formattedDate = r.created_at 
+        ? new Date(r.created_at).toLocaleString('id-ID', { 
+            day: 'numeric', month: 'long', year: 'numeric', 
+            hour: '2-digit', minute: '2-digit' 
+          }).replace(/\./g, ':') // Some browsers use '.' for time separator in id-ID
+        : '-';
+      
+      return {
+        'No': i + 1, 'Nama': r.nama, 'Tempat Lahir': r.tempat_lahir,
+        'Tanggal Lahir': r.tanggal_lahir, 'Alamat': r.alamat,
+        'Orang Tua': r.nama_ortu, 'WhatsApp': r.whatsapp, 'Status': r.status,
+        'Tanggal Daftar': formattedDate,
+      };
+    })
     const ws = XLSX.utils.json_to_sheet(data)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'PPDB')

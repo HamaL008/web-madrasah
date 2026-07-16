@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Program extends Model
 {
-    protected $fillable = ['title', 'description', 'icon', 'urutan', 'image_path'];
+    protected $fillable = ['title', 'description', 'icon', 'urutan', 'image_path', 'focus_points'];
+
+    protected $casts = [
+        'focus_points' => 'array',
+    ];
 
     protected $appends = ['image_url'];
 

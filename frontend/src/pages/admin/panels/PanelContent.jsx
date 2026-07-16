@@ -48,6 +48,42 @@ function Textarea({ label, name, value, onChange, rows = 3 }) {
   )
 }
 
+function ImageUpload({ label, value, onChange }) {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => onChange(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div>
+      <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">{label}</label>
+      <div className="flex flex-col gap-3">
+        {value && (
+          <div className="w-32 h-32 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 relative group">
+            <img src={value} alt="preview" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <button type="button" onClick={() => onChange('')} className="text-white text-xs font-bold hover:underline">Hapus</button>
+            </div>
+          </div>
+        )}
+        <input 
+          type="file" accept="image/*" onChange={handleFileChange}
+          className="block w-full text-xs text-slate-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-xs file:font-semibold
+            file:bg-emerald-50 file:text-emerald-700
+            hover:file:bg-emerald-100 transition-colors cursor-pointer"
+        />
+      </div>
+    </div>
+  );
+}
+
 function ArrayEditor({ label, items, onChange, onAdd, onRemove }) {
   return (
     <div>
@@ -87,6 +123,7 @@ export default function PanelContent({ notify }) {
         hero_title:      d.hero_title      ?? '',
         hero_subtitle:   d.hero_subtitle   ?? '',
         sambutan:        d.sambutan        ?? '',
+        sambutan_image:  d.sambutan_image  ?? '',
         sejarah:         d.sejarah         ?? '',
         visi:            d.visi            ?? '',
         misi:            d.misi            ?? [],
@@ -110,6 +147,16 @@ export default function PanelContent({ notify }) {
 
   const handleArray = (key, idx, value) => {
     setForm((p) => { const arr = [...p[key]]; arr[idx] = value; return { ...p, [key]: arr } })
+  }
+
+  const handlePilar = (idx, field, value) => {
+    setForm((p) => {
+      const arr = [...p.misi]
+      const current = typeof arr[idx] === 'string' ? { title: arr[idx], description: '', icon: 'Award' } : { ...arr[idx] }
+      current[field] = value
+      arr[idx] = current
+      return { ...p, misi: arr }
+    })
   }
 
   const addItem = (key, empty) => setForm((p) => ({ ...p, [key]: [...p[key], empty] }))
@@ -178,18 +225,46 @@ export default function PanelContent({ notify }) {
         <Field label="Judul Hero" name="hero_title" value={form.hero_title} onChange={handleChange} />
         <Textarea label="Subtitle Hero" name="hero_subtitle" value={form.hero_subtitle} onChange={handleChange} rows={2} />
         <Textarea label="Sambutan Kepala Madrasah" name="sambutan" value={form.sambutan} onChange={handleChange} rows={5} />
+        <ImageUpload 
+          label="Foto Kepala Madrasah" 
+          value={form.sambutan_image} 
+          onChange={(val) => setForm(p => ({ ...p, sambutan_image: val }))} 
+        />
       </Section>
 
       {/* ── 3. Profil Madrasah ── */}
-      <Section title="Profil Madrasah" subtitle="Sejarah, visi, dan misi madrasah">
+      <Section title="Visi & Misi" subtitle="Visi dan misi madrasah">
         <Textarea label="Sejarah" name="sejarah" value={form.sejarah} onChange={handleChange} rows={5} />
         <Textarea label="Visi" name="visi" value={form.visi} onChange={handleChange} rows={2} />
-        <ArrayEditor label="Misi"
-          items={form.misi}
-          onChange={(i, v) => handleArray('misi', i, v)}
-          onAdd={() => addItem('misi', '')}
-          onRemove={(i) => removeItem('misi', i)}
-        />
+        
+        <div>
+          <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Misi (Poin-poin)</label>
+          <div className="space-y-4">
+            {form.misi.map((item, i) => {
+              const pilar = typeof item === 'string' ? { title: item, description: '', icon: 'Award' } : item;
+              return (
+                <div key={i} className="flex gap-3 items-start bg-slate-50 p-3 rounded-xl border border-slate-200">
+                  <div className="flex-1 space-y-2">
+                    <input value={pilar.title || ''} onChange={(e) => handlePilar(i, 'title', e.target.value)} placeholder="Judul Misi" className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs" />
+                    <textarea value={pilar.description || ''} onChange={(e) => handlePilar(i, 'description', e.target.value)} placeholder="Deskripsi Misi" className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs resize-none" rows={2} />
+                    <select value={pilar.icon || 'Award'} onChange={(e) => handlePilar(i, 'icon', e.target.value)} className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs">
+                       <option value="Award">Award</option>
+                       <option value="Users">Users</option>
+                       <option value="ShieldCheck">ShieldCheck</option>
+                       <option value="BookOpen">BookOpen</option>
+                    </select>
+                  </div>
+                  <button type="button" onClick={() => removeItem('misi', i)} className="text-red-500 p-1.5 rounded-lg hover:bg-red-50">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              );
+            })}
+            <button type="button" onClick={() => addItem('misi', { title: '', description: '', icon: 'Award' })} className="text-xs text-emerald-700 font-bold flex items-center gap-1 hover:underline mt-2">
+              <Plus className="w-3.5 h-3.5" /> Tambah Misi
+            </button>
+          </div>
+        </div>
       </Section>
 
       {/* ── 4. Biaya PPDB ── */}

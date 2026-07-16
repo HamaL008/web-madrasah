@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Plus, Trash2, FileSpreadsheet, X, UploadCloud, Image as ImageIcon, Pencil, Users, GraduationCap } from 'lucide-react'
 import api from '../../../api/axios'
+import * as XLSX from 'xlsx'
 
 async function exportToExcel(data, fields, sheetName, fileName) {
-  const { default: XLSX } = await import('xlsx')
   const ws = XLSX.utils.json_to_sheet(data.map((item, i) => {
     const row = { 'No': i + 1 }
     fields.forEach(([key, label]) => { row[label] = item[key] })
@@ -57,6 +57,9 @@ export default function PanelDatabase({ notify }) {
   const [students, setStudents] = useState([])
   const [teachers, setTeachers] = useState([])
   const [newStudent, setNewStudent] = useState({ nisn: '', nama: '', kelas: '', alamat: '' })
+  const [showStudentModal, setShowStudentModal] = useState(false)
+  const [editStudentId, setEditStudentId] = useState(null)
+  
   const [newTeacher, setNewTeacher] = useState({ nuptk: '', nama: '', mapel: '', jabatan: '', quotes: '' })
   const [showTeacherModal, setShowTeacherModal] = useState(false)
   const [editTeacherId, setEditTeacherId] = useState(null)
@@ -81,16 +84,35 @@ export default function PanelDatabase({ notify }) {
     api.get('/admin/teachers').then((r) => setTeachers(r.data)).catch(() => {})
   }, [])
 
-  const addStudent = async (e) => {
+  const saveStudent = async (e) => {
     e.preventDefault(); setErr('')
     try {
-      const res = await api.post('/admin/students', newStudent)
-      setStudents((p) => [...p, res.data])
-      setNewStudent({ nisn: '', nama: '', kelas: '', alamat: '' })
-      notify('Santri berhasil ditambahkan.')
+      if (editStudentId) {
+        const res = await api.put(`/admin/students/${editStudentId}`, newStudent)
+        setStudents((p) => p.map((s) => (s.id === editStudentId ? res.data : s)))
+        notify('Data santri diperbarui.')
+      } else {
+        const res = await api.post('/admin/students', newStudent)
+        setStudents((p) => [...p, res.data])
+        notify('Santri berhasil ditambahkan.')
+      }
+      closeStudentModal()
     } catch (err) {
       setErr(err.response?.data?.message ?? Object.values(err.response?.data?.errors ?? {})[0]?.[0] ?? 'Gagal.')
     }
+  }
+
+  const openEditStudentModal = (s) => {
+    setEditStudentId(s.id)
+    setNewStudent({ nisn: s.nisn, nama: s.nama, kelas: s.kelas, alamat: s.alamat || '' })
+    setShowStudentModal(true)
+  }
+
+  const closeStudentModal = () => {
+    setShowStudentModal(false)
+    setEditStudentId(null)
+    setNewStudent({ nisn: '', nama: '', kelas: '', alamat: '' })
+    setErr('')
   }
 
   const confirmDelete = async () => {
@@ -187,27 +209,20 @@ export default function PanelDatabase({ notify }) {
 
       {tab === 'students' && (
         <div className="space-y-6">
-          {/* Add form */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2"><Plus className="w-4 h-4" /> Tambah Santri Baru</h3>
-            <form onSubmit={addStudent} className="flex flex-wrap gap-3">
-              {[['nisn', 'NISN'], ['nama', 'Nama Lengkap'], ['kelas', 'Kelas'], ['alamat', 'Alamat']].map(([name, ph]) => (
-                <input key={name} name={name} value={newStudent[name]} onChange={(e) => setNewStudent((p) => ({ ...p, [name]: e.target.value }))}
-                  placeholder={ph} className={inputCls} required />
-              ))}
-              <button type="submit" className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-1.5">
-                <Plus className="w-3.5 h-3.5" /> Tambah
-              </button>
-            </form>
-          </div>
           {/* Table */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-slate-100 gap-3">
               <span className="text-sm font-bold text-slate-700">Total: {students.length} santri</span>
-              <button onClick={async () => { await exportToExcel(students, [['nisn','NISN'],['nama','Nama'],['kelas','Kelas'],['alamat','Alamat']], 'Santri Aktif', `Santri_Aktif_${new Date().getFullYear()}.xlsx`); notify('Excel diunduh.') }}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
-                <FileSpreadsheet className="w-3.5 h-3.5" /> Ekspor
-              </button>
+              <div className="flex gap-2">
+                <button onClick={async () => { await exportToExcel(students, [['nisn','NISN'],['nama','Nama'],['kelas','Kelas'],['alamat','Alamat']], 'Santri Aktif', `Santri_Aktif_${new Date().getFullYear()}.xlsx`); notify('Excel diunduh.') }}
+                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+                  <FileSpreadsheet className="w-3.5 h-3.5" /> Ekspor
+                </button>
+                <button onClick={() => setShowStudentModal(true)}
+                  className="bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 shadow-sm">
+                  <Plus className="w-3.5 h-3.5" /> Tambah Santri
+                </button>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left">
@@ -232,9 +247,14 @@ export default function PanelDatabase({ notify }) {
                         <td className="p-3">{s.kelas}</td>
                         <td className="p-3 text-slate-500">{s.alamat}</td>
                         <td className="p-3">
-                          <button onClick={() => setDeleteTarget({ id: s.id, type: 'student' })} className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          <div className="flex gap-2">
+                            <button onClick={() => openEditStudentModal(s)} className="text-amber-500 hover:text-amber-700 p-1.5 rounded-lg hover:bg-amber-50">
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => setDeleteTarget({ id: s.id, type: 'student' })} className="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -348,7 +368,7 @@ export default function PanelDatabase({ notify }) {
                 <div>
                   <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Quotes / Pesan Singkat</label>
                   <textarea name="quotes" value={newTeacher.quotes} onChange={(e) => setNewTeacher((p) => ({ ...p, quotes: e.target.value }))}
-                    className={`${inputCls} resize-none h-20`} placeholder="Pesan inspiratif dari guru..." />
+                    className={`${inputCls} resize-none h-20`} placeholder="Pesan inspiratif dari pendidik..." />
                 </div>
               </form>
             </div>
@@ -356,6 +376,43 @@ export default function PanelDatabase({ notify }) {
               <button type="button" onClick={closeTeacherModal} className="px-4 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors">Batal</button>
               <button type="submit" form="teacherForm" className="px-4 py-2 text-xs font-bold text-white bg-emerald-800 rounded-lg hover:bg-emerald-900 shadow-sm transition-colors flex items-center gap-1.5">
                 <Plus className="w-3.5 h-3.5" /> {editTeacherId ? 'Simpan Perubahan' : 'Simpan Pendidik'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Tambah Santri */}
+      {showStudentModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+              <h3 className="font-extrabold text-slate-800 text-sm">{editStudentId ? 'Edit Data Santri' : 'Tambah Santri Baru'}</h3>
+              <button onClick={closeStudentModal} className="text-slate-400 hover:text-slate-600 p-1 bg-white rounded-md border border-slate-200 shadow-sm">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+              {err && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-xs font-semibold">{err}</div>}
+              <form id="studentForm" onSubmit={saveStudent} className="space-y-4">
+                {[['nisn', 'NISN'], ['nama', 'Nama Lengkap'], ['kelas', 'Kelas'], ['alamat', 'Alamat']].map(([name, label]) => (
+                  <div key={name}>
+                    <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">{label}</label>
+                    {name === 'alamat' ? (
+                      <textarea name={name} value={newStudent[name]} onChange={(e) => setNewStudent((p) => ({ ...p, [name]: e.target.value }))}
+                        className={`${inputCls} resize-none h-20 w-full`} placeholder={label} required />
+                    ) : (
+                      <input name={name} value={newStudent[name]} onChange={(e) => setNewStudent((p) => ({ ...p, [name]: e.target.value }))}
+                        className={`${inputCls} w-full`} placeholder={label} required />
+                    )}
+                  </div>
+                ))}
+              </form>
+            </div>
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3 shrink-0">
+              <button type="button" onClick={closeStudentModal} className="px-4 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors">Batal</button>
+              <button type="submit" form="studentForm" className="px-4 py-2 text-xs font-bold text-white bg-emerald-800 rounded-lg hover:bg-emerald-900 shadow-sm transition-colors flex items-center gap-1.5">
+                <Plus className="w-3.5 h-3.5" /> {editStudentId ? 'Simpan Perubahan' : 'Simpan Santri'}
               </button>
             </div>
           </div>

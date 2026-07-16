@@ -3,6 +3,10 @@ import {
   ExternalLink, ShieldCheck, CreditCard, Image as ImageIcon,
   Briefcase, Info, X
 } from "lucide-react"
+
+const ICON_MAP = {
+  Award, Users, ShieldCheck, BookOpen, CheckCircle, GraduationCap
+}
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import ProgramSection from "./ProgramSection"
@@ -34,7 +38,7 @@ function SectionHeader({ badge, badgeIcon: Icon, title, subtitle, dark = false }
           {Icon && <Icon className="w-3.5 h-3.5" />} {badge}
         </div>
       )}
-      <h2 className={`text-3xl md:text-4xl font-extrabold mb-3 ${dark ? 'text-white' : 'text-emerald-950'}`}>{title}</h2>
+      <h2 className={`font-sans text-3xl md:text-4xl font-extrabold mb-3 ${dark ? 'text-white' : 'text-emerald-950'}`}>{title}</h2>
       {subtitle && <p className={`text-sm leading-relaxed ${dark ? 'text-emerald-100/70' : 'text-slate-500'}`}>{subtitle}</p>}
     </div>
   )
@@ -145,7 +149,7 @@ function GaleriSection({ galeri, driveLegalitas }) {
                 <ShieldCheck className="w-5 h-5 text-amber-400" /> Legalitas & Perizinan Yayasan
               </h3>
               <p className="text-slate-400 text-xs max-w-lg leading-relaxed">
-                Madrasah Miftahul Ulum beroperasi resmi di bawah Yayasan Pondok Pesantren Hikmatul Furqon. Seluruh berkas SK dan Akreditasi dapat diakses publik.
+                Madrasah Miftahul Ulum beroperasi resmi di bawah Yayasan Pondok Pesantren Hikmatul Furqon. Seluruh berkas SK dapat diakses publik.
               </p>
             </div>
             <a href={driveLegalitas} target="_blank" rel="noopener noreferrer"
@@ -203,7 +207,7 @@ export default function ProfileSections({ sejarah, visi, misi, kurikulum, biaya,
               <h2 className="text-3xl md:text-4xl font-extrabold text-emerald-950 leading-tight">
                 Tumbuh Bersama Nilai-Nilai Islam
               </h2>
-              <div className="text-slate-600 text-sm leading-7 space-y-4">
+              <div className="text-slate-600 text-sm leading-7 space-y-4 text-justify">
                 {sejarah.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}
               </div>
             </div>
@@ -215,14 +219,13 @@ export default function ProfileSections({ sejarah, visi, misi, kurikulum, biaya,
               <div className="px-7 py-6 space-y-4">
                 {[
                   ["Lembaga Naungan", "Yayasan Ponpes Hikmatul Furqon"],
-                  ["Tahun Berdiri", "2012"],
-                  ["Status Akreditasi", "Terakreditasi A"],
-                  ["Kurikulum Utama", "Kemenag & Pesantren Salaf"],
-                  ["Lokasi", "Bogor, Jawa Barat"],
+                  ["Tahun Berdiri", "2025"],
+                  ["Kurikulum Utama", "Pesantren Salaf"],
+                  ["Lokasi", "Dusun Gondoarum, Jambearum, Patebon"],
                 ].map(([label, val]) => (
-                  <div key={label} className="flex justify-between items-center border-b border-white/10 pb-3 last:border-0 last:pb-0 text-sm">
-                    <span className="text-emerald-300 font-medium text-xs">{label}</span>
-                    <span className="font-bold text-right text-xs">{val}</span>
+                  <div key={label} className="flex flex-col sm:flex-row items-start border-b border-white/10 pb-3 last:border-0 last:pb-0 text-sm gap-1 sm:gap-4">
+                    <span className="text-emerald-300 font-medium text-xs w-32 shrink-0 sm:mt-0.5">{label}</span>
+                    <span className="font-bold text-left text-xs leading-relaxed">{val}</span>
                   </div>
                 ))}
               </div>
@@ -234,34 +237,55 @@ export default function ProfileSections({ sejarah, visi, misi, kurikulum, biaya,
         </div>
       </section>
 
-      <section id="visi-misi" className="py-24 bg-emerald-50/50">
+      <section id="visi-misi" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            title="Visi & Misi"
-            subtitle="Arah dan komitmen madrasah dalam membimbing generasi sholeh, cerdas, dan mandiri."
-          />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mt-8">
-            <div className="reveal reveal-left space-y-6">
-              <span className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 bg-emerald-100/50 px-3 py-1.5 rounded-md inline-block">
-                Visi Utama
+          <div className="bg-madrasah-cream rounded-[2.5rem] p-8 md:p-14 lg:p-20 shadow-sm border border-emerald-900/5 relative overflow-hidden">
+            {/* Dekorasi halus */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div className="relative z-10">
+              <span className="block text-xs font-extrabold uppercase tracking-widest text-amber-600 mb-4 lg:mb-6 reveal reveal-left">
+                VISI & PILAR UTAMA
               </span>
-              <h3 className="text-4xl md:text-5xl font-serif text-emerald-950 leading-tight">
-                "{visi}"
-              </h3>
-              <div className="w-20 h-1.5 bg-amber-400 rounded-full mt-4"></div>
-            </div>
-            <div className="reveal reveal-right space-y-4">
-              <h4 className="text-sm font-extrabold uppercase tracking-widest text-emerald-800 mb-2">Misi Madrasah</h4>
-              {misi.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-5 bg-white rounded-2xl shadow-sm border border-slate-100 hover:-translate-y-1 hover:shadow-md transition-all duration-300 group">
-                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 font-bold border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                    {i + 1}
-                  </div>
-                  <p className="text-slate-600 text-sm leading-relaxed pt-1">
-                    {item}
-                  </p>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+                {/* Kiri: Judul Visi */}
+                <div className="lg:col-span-7 reveal reveal-left">
+                  <h2 className="text-3xl md:text-5xl font-serif text-emerald-950 font-extrabold leading-[1.15]">
+                    Membentuk Generasi yang Unggul & Berkarakter Mulia
+                  </h2>
                 </div>
-              ))}
+
+                {/* Kanan: Kutipan Visi */}
+                <div className="lg:col-span-5 reveal reveal-right space-y-6">
+                  <p className="text-emerald-900/80 text-lg md:text-xl font-serif italic leading-relaxed">
+                    "{visi}"
+                  </p>
+                  <div className="pt-2">
+                    <a href="#sejarah" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-emerald-800 hover:text-amber-600 transition-colors">
+                      PELAJARI PROFIL & SEJARAH KAMI <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Bawah: 3 Pilar Utama */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mt-8 md:mt-10 relative z-10 border-t border-emerald-900/10 pt-6 md:pt-8">
+              {misi && misi.map((item, i) => {
+                const pilar = typeof item === 'string' ? { title: item, description: '', icon: 'Award' } : item;
+                const IconComp = ICON_MAP[pilar.icon] || Award;
+                return (
+                  <div key={i} className={`reveal reveal-scale delay-${((i % 3) + 1) * 100}`}>
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-700 mb-5 shadow-sm">
+                      <IconComp className="w-5 h-5" />
+                    </div>
+                    <h4 className="font-extrabold text-emerald-950 text-base mb-2">{pilar.title}</h4>
+                    <p className="text-sm text-emerald-900/70 leading-relaxed">
+                      {pilar.description}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -270,12 +294,19 @@ export default function ProfileSections({ sejarah, visi, misi, kurikulum, biaya,
       <ProgramSection />
 
       {teachers.length > 0 && (
-        <section id="guru" className="py-24 bg-emerald-950">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="pendidik" className="py-24 relative overflow-hidden bg-emerald-900">
+          {/* Background Decorations (Matching Hero) */}
+          <div className="absolute inset-0 opacity-[0.06] pointer-events-none" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")`
+          }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/70 via-emerald-900/55 to-emerald-950/80 pointer-events-none" />
+          <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full bg-amber-400/5 blur-3xl pointer-events-none animate-pulse-slow" />
+          
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <SectionHeader
               badge="Tenaga Pendidik"
               badgeIcon={GraduationCap}
-              title="Profil Guru & Ustadz"
+              title="Profil Ustadz & Ustadzah"
               subtitle="Para pendidik kami adalah sosok yang berdedikasi, berpengalaman, dan berkomitmen dalam membimbing generasi Qur'ani."
               dark={true}
             />

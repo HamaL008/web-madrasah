@@ -4,6 +4,7 @@ import {
   LayoutDashboard, UserCheck, Users, Edit,
   LogOut, Eye, BookOpen, Check, AlertCircle, Menu, X, Settings, Images, Award
 } from 'lucide-react'
+import logoImg from '../../assets/logo.png'
 import api from '../../api/axios'
 import PanelOverview from './panels/PanelOverview'
 import PanelPPDB from './panels/PanelPPDB'
@@ -58,12 +59,10 @@ export default function Dashboard() {
     <>
       {/* Brand */}
       <div className="p-6 border-b border-emerald-900/50 flex items-center gap-3 shrink-0">
-        <div className="bg-amber-400 p-2 rounded-xl text-emerald-950 shadow">
-          <BookOpen className="w-5 h-5" />
-        </div>
+        <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
         <div>
-          <h2 className="font-extrabold text-sm tracking-wide">Portal Admin</h2>
-          <p className="text-[10px] text-emerald-300 font-medium tracking-wider">MIFTAHUL ULUM</p>
+          <h2 className="font-sans font-extrabold text-sm tracking-wide">Portal Admin</h2>
+          <p className="font-serif text-[10px] text-emerald-300 tracking-wide">Miftahul Ulum</p>
         </div>
       </div>
 
@@ -120,12 +119,10 @@ export default function Dashboard() {
       {/* ── MOBILE TOP BAR ── */}
       <header className="md:hidden sticky top-0 z-40 bg-emerald-950 border-b border-emerald-900 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="bg-amber-400 p-1.5 rounded-lg text-emerald-950">
-            <BookOpen className="w-4 h-4" />
-          </div>
+          <img src={logoImg} alt="Logo" className="w-9 h-9 object-contain" />
           <div>
-            <p className="font-extrabold text-xs text-white leading-tight">Portal Admin</p>
-            <p className="text-[9px] text-emerald-300 font-medium uppercase tracking-wider">Miftahul Ulum</p>
+            <p className="font-sans font-extrabold text-xs text-white leading-tight">Portal Admin</p>
+            <p className="font-serif text-[9px] text-emerald-300 tracking-wide">Miftahul Ulum</p>
           </div>
         </div>
         <div className="flex items-center gap-3">

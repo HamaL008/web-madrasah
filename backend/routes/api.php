@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Public Routes ────────────────────────────────────────────
 Route::get('/content', [SiteContentController::class, 'show']);
+Route::get('/stats', [SiteContentController::class, 'stats']);
 Route::get('/gallery', [GalleryController::class, 'index']);
 Route::get('/teachers', [TeacherController::class, 'index']);
 Route::get('/news', [NewsController::class, 'index']);
@@ -48,7 +49,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     // Programs
     Route::get('/programs',                  [ProgramController::class, 'index']);
     Route::post('/programs',                 [ProgramController::class, 'store']);
-    Route::put('/programs/{program}',        [ProgramController::class, 'update']);
+    Route::post('/programs/{program}',       [ProgramController::class, 'update']);
     Route::delete('/programs/{program}',     [ProgramController::class, 'destroy']);
 
     // PPDB Registrants
@@ -59,6 +60,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     // Students
     Route::get('/students', [StudentController::class, 'index']);
     Route::post('/students', [StudentController::class, 'store']);
+    Route::put('/students/{student}', [StudentController::class, 'update']);
     Route::delete('/students/{student}', [StudentController::class, 'destroy']);
 
     // Teachers

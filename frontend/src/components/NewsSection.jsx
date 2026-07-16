@@ -1,46 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Newspaper, Calendar, ArrowRight, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 
 function formatDate(str) {
   return new Date(str).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
-}
-
-function DetailModal({ item, onClose }) {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [])
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-      onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
-        onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between p-5 border-b border-slate-100 shrink-0">
-          <span className="text-[10px] text-slate-400 flex items-center gap-1">
-            <Calendar className="w-3 h-3" />{formatDate(item.created_at)}
-          </span>
-          <button onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 ml-2 shrink-0">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="overflow-y-auto flex-1 p-6 space-y-4">
-          {item.image_url && (
-            <img src={item.image_url} alt={item.title} className="w-full max-h-96 object-contain bg-slate-100 rounded-xl" />
-          )}
-          <h2 className="text-xl font-extrabold text-emerald-950 leading-snug">{item.title}</h2>
-          {item.excerpt && (
-            <p className="text-slate-500 text-sm italic border-l-2 border-emerald-400 pl-3">{item.excerpt}</p>
-          )}
-          <div className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap pt-2 border-t border-slate-100">
-            {item.content}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 const AUTO_DELAY = 3500
@@ -48,10 +12,10 @@ const AUTO_DELAY = 3500
 export default function NewsSection() {
   const [news, setNews]         = useState([])
   const [loading, setLoading]   = useState(true)
-  const [selected, setSelected] = useState(null)
   const [current, setCurrent]   = useState(0)
   const timerRef = useRef(null)
   const pauseRef = useRef(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     api.get('/news')
@@ -93,7 +57,7 @@ export default function NewsSection() {
     setTimeout(resume, AUTO_DELAY)
   }
 
-  if (!loading && len === 0) return null
+
 
   // Tentukan indeks card yang tampil: current-1, current, current+1 (looping)
   // Jika berita <= 3, tampilkan semua terpusat
@@ -124,7 +88,7 @@ export default function NewsSection() {
             <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
               <Newspaper className="w-3.5 h-3.5" /> Berita & Pengumuman
             </div>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-emerald-950 mb-2">
+            <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-emerald-950 mb-2">
               Kabar Terkini Madrasah
             </h2>
             <p className="text-slate-500 text-sm">
@@ -135,6 +99,11 @@ export default function NewsSection() {
           {loading ? (
             <div className="flex justify-center py-12">
               <div className="w-7 h-7 rounded-full border-4 border-emerald-700 border-t-transparent animate-spin" />
+            </div>
+          ) : len === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+              <Newspaper className="w-12 h-12 mb-4 text-slate-300" />
+              <p className="text-sm font-medium">Belum ada berita atau pengumuman saat ini.</p>
             </div>
           ) : (
             <div className="relative" onMouseEnter={pause} onMouseLeave={resume}>
@@ -155,7 +124,7 @@ export default function NewsSection() {
                   return (
                     <article
                       key={`${newsIdx}-${pos}`}
-                      onClick={() => setSelected(item)}
+                      onClick={() => navigate(`/berita/${item.slug}`)}
                       className={`reveal reveal-scale bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group cursor-pointer shrink-0 w-72 sm:w-80 p-2 ${
                         isCenter
                           ? 'scale-[1.02] shadow-md'
@@ -232,7 +201,6 @@ export default function NewsSection() {
         </div>
       </section>
 
-      {selected && <DetailModal item={selected} onClose={() => setSelected(null)} />}
     </>
   )
 }

@@ -1,4 +1,5 @@
-import { MapPin, Phone, Mail, Shield, BookOpen } from 'lucide-react'
+import { MapPin, Phone, Mail } from 'lucide-react'
+import logoImg from '../assets/logo.png'
 
 const InstagramIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -24,7 +25,7 @@ const NAV_LINKS = [
   ['Beranda',             'beranda'],
   ['Profil & Sejarah',    'sejarah'],
   ['Program',             'program'],
-  ['Profil Guru',         'guru'],
+  ['Profil Pendidik',     'pendidik'],
   ['Galeri',              'galeri'],
   ['Berita & Pengumuman', 'berita'],
   ['Pendaftaran PPDB',    'ppdb'],
@@ -41,13 +42,11 @@ export default function Footer({ logoName, kontak }) {
           {/* Brand */}
           <div className="reveal md:col-span-5 space-y-5">
             <div className="flex items-center gap-3">
-              <div className="bg-amber-400 p-2 rounded-xl text-emerald-950">
-                <BookOpen className="w-5 h-5" />
-              </div>
+              <img src={logoImg} alt="Logo Madrasah" className="w-12 h-12 object-contain" />
               <div>
-                <p className="font-extrabold text-base text-white">{logoName}</p>
-                <p className="text-[10px] text-emerald-400 font-semibold uppercase tracking-widest">
-                  Yayasan Ponpes Hikmatul Furqon
+                <p className="font-sans font-extrabold text-base text-white">{logoName}</p>
+                <p className="font-serif text-[11px] text-emerald-300 tracking-wide">
+                  Dusun Gondoarum · Jambearum - Patebon
                 </p>
               </div>
             </div>
@@ -70,7 +69,7 @@ export default function Footer({ logoName, kontak }) {
 
           {/* Navigasi */}
           <div className="reveal delay-200 md:col-span-3 space-y-4">
-            <h4 className="font-extrabold text-[11px] uppercase tracking-widest text-amber-300">Navigasi</h4>
+            <h4 className="font-sans font-extrabold text-[11px] uppercase tracking-widest text-amber-300">Navigasi</h4>
             <ul className="space-y-2.5">
               {NAV_LINKS.map(([label, id]) => (
                 <li key={label}>
@@ -87,7 +86,7 @@ export default function Footer({ logoName, kontak }) {
 
           {/* Kontak */}
           <div className="reveal delay-300 md:col-span-4 space-y-4">
-            <h4 className="font-extrabold text-[11px] uppercase tracking-widest text-amber-300">Hubungi Kami</h4>
+            <h4 className="font-sans font-extrabold text-[11px] uppercase tracking-widest text-amber-300">Hubungi Kami</h4>
             <ul className="space-y-3.5 text-xs text-slate-400">
               {kontak.alamat && (
                 <li className="flex items-start gap-3">

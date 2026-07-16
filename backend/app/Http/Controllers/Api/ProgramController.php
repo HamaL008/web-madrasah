@@ -25,7 +25,13 @@ class ProgramController extends Controller
             'icon'        => 'nullable|string|max:50',
             'urutan'      => 'nullable|integer',
             'image'       => 'nullable|image|max:5120',
+            'focus_points'=> 'nullable',
         ]);
+
+        $focusPoints = $validated['focus_points'] ?? null;
+        if (is_string($focusPoints)) {
+            $focusPoints = json_decode($focusPoints, true);
+        }
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -40,6 +46,7 @@ class ProgramController extends Controller
             'icon'        => $validated['icon'] ?? 'BookOpen',
             'urutan'      => $validated['urutan'] ?? 0,
             'image_path'  => $imagePath,
+            'focus_points'=> $focusPoints,
         ]);
 
         return response()->json($program, 201);
@@ -54,7 +61,14 @@ class ProgramController extends Controller
             'icon'        => 'nullable|string|max:50',
             'urutan'      => 'nullable|integer',
             'image'       => 'nullable|image|max:5120',
+            'focus_points'=> 'nullable',
         ]);
+
+        $focusPoints = $validated['focus_points'] ?? null;
+        if (is_string($focusPoints)) {
+            $focusPoints = json_decode($focusPoints, true);
+        }
+        $validated['focus_points'] = $focusPoints;
 
         if ($request->hasFile('image')) {
             if ($program->image_path) {

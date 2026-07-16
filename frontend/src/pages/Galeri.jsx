@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Image as ImageIcon, ArrowLeft, BookOpen } from 'lucide-react'
+import { Image as ImageIcon, ArrowLeft } from 'lucide-react'
 import api from '../api/axios'
 import { useRevealObserver } from '../hooks/useReveal'
+import logoImg from '../assets/logo.png'
 
 export default function GaleriPage() {
   useRevealObserver()
@@ -27,9 +28,9 @@ export default function GaleriPage() {
     : galeri.filter((g) => g.category === activecat)
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-madrasah-bg">
       {/* Header */}
-      <div className="bg-emerald-950 text-white">
+      <div className="text-white bg-emerald-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center gap-4">
           <button
             onClick={() => navigate(-1)}
@@ -38,14 +39,12 @@ export default function GaleriPage() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2.5">
-            <div className="bg-amber-400 p-1.5 rounded-lg text-emerald-950">
-              <BookOpen className="w-4 h-4" />
-            </div>
+          <div className="flex items-center gap-3">
+            <img src={logoImg} alt="Logo Madrasah" className="w-11 h-11 object-contain" />
             <div>
-              <p className="font-extrabold text-sm text-white leading-tight">Galeri Kegiatan</p>
-              <p className="text-[10px] text-emerald-400 font-medium uppercase tracking-widest">
-                Madrasah Miftahul Ulum
+              <p className="font-sans font-extrabold text-sm text-white leading-tight">Galeri Kegiatan</p>
+              <p className="font-serif text-[11px] font-medium text-amber-300 tracking-wide">
+                Madrasah Diniyyah Miftahul Ulum
               </p>
             </div>
           </div>
@@ -58,7 +57,7 @@ export default function GaleriPage() {
           <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <ImageIcon className="w-3.5 h-3.5" /> Dokumentasi Kegiatan
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-emerald-950 mb-2">
+          <h1 className="font-sans text-3xl md:text-4xl font-extrabold text-emerald-950 mb-2">
             Galeri Kegiatan Madrasah
           </h1>
           <p className="text-slate-500 text-sm">

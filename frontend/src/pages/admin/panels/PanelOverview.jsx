@@ -24,7 +24,7 @@ export default function PanelOverview({ onNavigate }) {
   const cards = [
     { label: 'Total Pendaftar PPDB', value: `${stats.registrants} Santri`, sub: `${stats.pending} Menunggu Verifikasi`, icon: UserCheck, subColor: 'text-amber-600 bg-amber-50' },
     { label: 'Santri Aktif Terdaftar', value: `${stats.students} Santri`, sub: 'Di dalam Database Internal', icon: Users, subColor: 'text-emerald-700 bg-emerald-50' },
-    { label: 'Total Ustadz/Ustadzah', value: `${stats.teachers} Guru`, sub: 'Pendidik & Staf Yayasan', icon: Award, subColor: 'text-blue-700 bg-blue-50' },
+    { label: 'Total Ustadz/Ustadzah', value: `${stats.teachers} Pendidik`, sub: 'Pendidik & Staf Yayasan', icon: Award, subColor: 'text-blue-700 bg-blue-50' },
   ]
 
   return (

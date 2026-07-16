@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
-import { Menu, X, BookOpen } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import logoImg from '../assets/logo.png'
 
 const navLinks = [
   { name: 'Beranda',  href: 'beranda',   page: null },
   { name: 'Profil',   href: 'sejarah',   page: null },
   { name: 'Program',  href: 'program',   page: null },
-  { name: 'Guru',     href: 'guru',      page: null },
+  { name: 'Pendidik', href: 'pendidik',  page: null },
   { name: 'Galeri',   href: 'galeri',    page: null },
   { name: 'Berita',   href: 'berita',    page: null },
   { name: 'Kontak',   href: 'kontak',    page: null },
@@ -17,6 +18,7 @@ export default function Navbar({ logoName }) {
   const [scrolled, setScrolled] = useState(false)
   const headerRef = useRef(null)
   const navigate  = useNavigate()
+  const location  = useLocation()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -26,6 +28,10 @@ export default function Navbar({ logoName }) {
 
   const scrollToSection = (id, closeMenu = false) => {
     if (closeMenu) setIsOpen(false)
+    if (location.pathname !== '/') {
+      navigate('/?scrollTo=' + id)
+      return
+    }
     const target = document.getElementById(id)
     if (!target) return
     const headerHeight = headerRef.current?.offsetHeight ?? 65
@@ -49,16 +55,18 @@ export default function Navbar({ logoName }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <button onClick={() => scrollToSection('beranda')} className="flex items-center gap-2.5 group">
-          <div className="bg-gradient-to-br from-amber-400 to-amber-500 p-2 rounded-xl text-emerald-950 shadow-md group-hover:scale-105 transition-transform duration-300">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col text-left">
-            <span className="font-extrabold text-sm text-white tracking-wide group-hover:text-amber-300 transition-colors">
+        <button onClick={() => scrollToSection('beranda')} className="flex items-center gap-3 group">
+          <img
+            src={logoImg}
+            alt="Logo Madrasah"
+            className="w-11 h-11 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="flex flex-col text-left overflow-hidden">
+            <span className="font-sans font-extrabold text-sm text-white tracking-wide group-hover:text-amber-300 transition-colors truncate">
               {logoName}
             </span>
-            <span className="text-[10px] text-emerald-300 font-medium tracking-wider">
-              YAYASAN PONPES HIKMATUL FURQON
+            <span className="font-sans text-[10px] text-emerald-300 font-semibold tracking-wider uppercase hidden sm:block truncate">
+              Dusun Gondoarum · Jambearum - Patebon
             </span>
           </div>
         </button>
@@ -69,14 +77,14 @@ export default function Navbar({ logoName }) {
             <button
               key={link.name}
               onClick={() => handleNav(link)}
-              className="text-emerald-100 hover:text-amber-300 text-sm font-medium transition-colors"
+              className="font-sans text-emerald-100 hover:text-amber-300 text-sm font-medium transition-colors"
             >
               {link.name}
             </button>
           ))}
           <button
             onClick={() => scrollToSection('ppdb')}
-            className="bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2 rounded-xl text-sm font-bold shadow-md transition-all"
+            className="font-sans bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2 rounded-xl text-sm font-bold shadow-md transition-all"
           >
             PPDB Online
           </button>

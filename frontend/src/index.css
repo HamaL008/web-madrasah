@@ -1,105 +1,144 @@
 @import "tailwindcss";
 
-@keyframes marquee {
-  0%   { transform: translateX(0%); }
-  100% { transform: translateX(-33.33%); }
-}
-.animate-marquee {
-  animation: marquee 22s linear infinite;
+@theme {
+  /* Typography — Poppins (sans) + Playfair Display (serif) */
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
+
+  /* Warna logo: Hijau Madrasah (Tailwind Green) & Kuning Cerah (Tailwind Yellow) */
+  --color-emerald-50: #f0fdf4;
+  --color-emerald-100: #dcfce7;
+  --color-emerald-200: #bbf7d0;
+  --color-emerald-300: #86efac;
+  --color-emerald-400: #4ade80;
+  --color-emerald-500: #22c55e;
+  --color-emerald-600: #16a34a;
+  --color-emerald-700: #15803d;
+  --color-emerald-800: #166534;
+  --color-emerald-900: #14532d;
+  --color-emerald-950: #052e16;
+
+  --color-amber-50: #fefce8;
+  --color-amber-100: #fef9c3;
+  --color-amber-200: #fef08a;
+  --color-amber-300: #fde047;
+  --color-amber-400: #facc15;
+  --color-amber-500: #eab308;
+  --color-amber-600: #ca8a04;
+  --color-amber-700: #a16207;
+  --color-amber-800: #854d0e;
+  --color-amber-900: #713f12;
+  --color-amber-950: #422006;
+
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-green-950: #052e16;
+
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef9c3;
+  --color-yellow-200: #fef08a;
+  --color-yellow-300: #fde047;
+  --color-yellow-400: #facc15;
+  --color-yellow-500: #eab308;
+  --color-yellow-600: #ca8a04;
+  --color-yellow-700: #a16207;
+  --color-yellow-800: #854d0e;
+  --color-yellow-900: #713f12;
+  --color-yellow-950: #422006;
+
+  --color-madrasah-cream: #fffdf5;
+  --color-madrasah-bg: #f8faf9;
 }
 
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in {
-  animation: fade-in 0.3s ease forwards;
+/* Base typography */
+html {
+  scroll-behavior: smooth;
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(32px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-up       { animation: fade-up 0.7s ease forwards; }
-.animate-fade-up-delay-1 { animation: fade-up 0.7s 0.15s ease both; }
-.animate-fade-up-delay-2 { animation: fade-up 0.7s 0.30s ease both; }
-.animate-fade-up-delay-3 { animation: fade-up 0.7s 0.45s ease both; }
-.animate-fade-up-delay-4 { animation: fade-up 0.7s 0.60s ease both; }
-
-@keyframes fade-in-scale {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-}
-.animate-fade-in-scale { animation: fade-in-scale 0.8s 0.2s ease both; }
-
-@keyframes slide-in-left {
-  from { opacity: 0; transform: translateX(-40px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-.animate-slide-in-left { animation: slide-in-left 0.7s ease both; }
-.animate-slide-in-left-delay { animation: slide-in-left 0.7s 0.2s ease both; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-10px); }
-}
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+body {
+  font-family: var(--font-sans);
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
 }
 
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.6; }
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: var(--font-serif);
 }
-.animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
 
-/* Scroll-triggered reveal */
+/* Scroll reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
+.reveal-scale {
+  transform: translateY(24px) scale(0.95);
+}
+.reveal-scale.visible {
+  transform: translateY(0) scale(1);
+}
 .reveal-left {
-  opacity: 0;
-  transform: translateX(-32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateX(-30px);
 }
 .reveal-left.visible {
-  opacity: 1;
   transform: translateX(0);
 }
 .reveal-right {
-  opacity: 0;
-  transform: translateX(32px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateX(30px);
 }
 .reveal-right.visible {
-  opacity: 1;
   transform: translateX(0);
 }
-.reveal-scale {
-  opacity: 0;
-  transform: scale(0.94);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.reveal-scale.visible {
-  opacity: 1;
-  transform: scale(1);
-}
-/* Delay helpers */
-.delay-100 { transition-delay: 0.10s !important; }
-.delay-200 { transition-delay: 0.20s !important; }
-.delay-300 { transition-delay: 0.30s !important; }
-.delay-400 { transition-delay: 0.40s !important; }
-.delay-500 { transition-delay: 0.50s !important; }
 
-html, body {
-  scroll-behavior: auto;
-  overflow-x: clip;
-  background-color: #fff;
-  width: 100%;
+.delay-100 { transition-delay: 100ms; }
+.delay-200 { transition-delay: 200ms; }
+.delay-300 { transition-delay: 300ms; }
+.delay-400 { transition-delay: 400ms; }
+
+/* Hero animations */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+.animate-fade-up { animation: fade-up 0.8s ease forwards; }
+.animate-fade-up-delay-1 { animation: fade-up 0.8s 0.1s ease forwards; opacity: 0; }
+.animate-fade-up-delay-2 { animation: fade-up 0.8s 0.2s ease forwards; opacity: 0; }
+.animate-fade-up-delay-3 { animation: fade-up 0.8s 0.3s ease forwards; opacity: 0; }
+.animate-fade-up-delay-4 { animation: fade-up 0.8s 0.4s ease forwards; opacity: 0; }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in { animation: fade-in 0.3s ease forwards; }
+
+@keyframes fade-in-scale {
+  from { opacity: 0; transform: scale(1.05); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-fade-in-scale { animation: fade-in-scale 1.2s ease forwards; }
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 25s linear infinite; }
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.05; }
+  50% { opacity: 0.15; }
+}
+.animate-pulse-slow { animation: pulse-slow 4s ease-in-out infinite; }

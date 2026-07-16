@@ -32,8 +32,7 @@ export default function PanelProgram({ notify }) {
   const [selected, setSelected] = useState(null)
   const [form, setForm]         = useState(EMPTY_FORM)
   const [saving, setSaving]     = useState(false)
-  const [programImage, setProgramImage] = useState(null)
-  const [programImagePreview, setProgramImagePreview] = useState(null)
+  const [focusPoints, setFocusPoints] = useState([])
 
   const load = () => {
     setLoading(true)
@@ -48,8 +47,7 @@ export default function PanelProgram({ notify }) {
   const openCreate = () => {
     setForm(EMPTY_FORM)
     setSelected(null)
-    setProgramImage(null)
-    setProgramImagePreview(null)
+    setFocusPoints([])
     setModal('form')
   }
 
@@ -61,17 +59,18 @@ export default function PanelProgram({ notify }) {
       icon:        item.icon ?? 'BookOpen',
       urutan:      item.urutan ?? '',
     })
-    setProgramImage(null)
-    setProgramImagePreview(item.image_url || null)
+    setFocusPoints(item.focus_points || [])
     setModal('form')
   }
 
-  const handleProgramImage = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (file.size > 5 * 1024 * 1024) return notify('Ukuran gambar maksimal 5MB.', 'error')
-    setProgramImage(file)
-    setProgramImagePreview(URL.createObjectURL(file))
+  const addFocusPoint = () => setFocusPoints([...focusPoints, ''])
+  const updateFocusPoint = (idx, val) => {
+    const updated = [...focusPoints]
+    updated[idx] = val
+    setFocusPoints(updated)
+  }
+  const removeFocusPoint = (idx) => {
+    setFocusPoints(focusPoints.filter((_, i) => i !== idx))
   }
 
   const handleSave = async () => {
@@ -83,10 +82,9 @@ export default function PanelProgram({ notify }) {
       fd.append('description', form.description)
       fd.append('icon', form.icon || 'BookOpen')
       fd.append('urutan', form.urutan || 0)
-      if (programImage) fd.append('image', programImage)
+      fd.append('focus_points', JSON.stringify(focusPoints.filter(p => p.trim())))
 
       if (selected) {
-        fd.append('_method', 'PUT')
         const res = await api.post(`/admin/programs/${selected.id}`, fd, { headers: { 'Content-Type': 'multipart/form-data' } })
         setPrograms((p) => p.map((i) => i.id === selected.id ? res.data : i))
         notify('Program berhasil diperbarui.')
@@ -174,23 +172,6 @@ export default function PanelProgram({ notify }) {
       {modal === 'form' && (
         <Modal title={selected ? 'Edit Program' : 'Tambah Program'} onClose={() => setModal(null)}>
           <div className="space-y-4">
-            {/* Upload Foto Dropzone */}
-            <div>
-              <label className="text-xs font-bold text-slate-600 block mb-2">Gambar Utama (Opsional, max 5MB)</label>
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 hover:border-emerald-500 transition-colors group overflow-hidden relative">
-                {programImagePreview ? (
-                  <img src={programImagePreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 text-slate-400 group-hover:text-emerald-600 transition-colors">
-                    <UploadCloud className="w-6 h-6 mb-2" />
-                    <p className="text-xs font-semibold">Klik untuk unggah foto</p>
-                  </div>
-                )}
-                <input type="file" accept="image/*" className="hidden" onChange={handleProgramImage} />
-              </label>
-              <p className="text-[10px] text-slate-400 mt-1.5 italic">Rekomendasi rasio 4:3 (Landscape) agar optimal di halaman depan.</p>
-            </div>
-
             <div>
               <label className="text-xs font-bold text-slate-600 block mb-1">Judul Program *</label>
               <input type="text" value={form.title}
@@ -205,6 +186,29 @@ export default function PanelProgram({ notify }) {
                 onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
                 rows={4} placeholder="Deskripsi program..."
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none" />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-slate-600 mb-2 flex items-center justify-between">
+                <span>Fokus & Unggulan Pembelajaran</span>
+                <button type="button" onClick={addFocusPoint} className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-1 rounded hover:bg-emerald-200 font-bold">
+                  + Tambah Poin
+                </button>
+              </label>
+              <div className="space-y-2">
+                {focusPoints.length === 0 && <p className="text-xs text-slate-400 italic">Belum ada poin unggulan.</p>}
+                {focusPoints.map((point, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <input type="text" value={point}
+                      onChange={(e) => updateFocusPoint(idx, e.target.value)}
+                      placeholder="Contoh: Bimbingan tahsin & tajwid bersertifikasi"
+                      className="flex-1 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+                    <button type="button" onClick={() => removeFocusPoint(idx)} className="p-2 text-red-500 hover:bg-red-50 rounded-xl">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

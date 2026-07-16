@@ -31,10 +31,10 @@ export default function ProgramSection() {
 
   return (
     <section id="program" className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="reveal text-center max-w-2xl mx-auto mb-16">
-          <p className="text-xs font-extrabold uppercase tracking-widest text-emerald-700 mb-2">Kurikulum Unggulan</p>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-emerald-950 mb-3">
+          <p className="font-sans text-xs font-extrabold uppercase tracking-widest text-emerald-700 mb-2">Kurikulum Unggulan</p>
+          <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-emerald-950 mb-3">
             Program & Pendidikan
           </h2>
           <div className="mx-auto w-12 h-1 bg-amber-400 rounded-full mt-3" />
@@ -45,43 +45,58 @@ export default function ProgramSection() {
             <div className="w-8 h-8 rounded-full border-4 border-emerald-600 border-t-transparent animate-spin" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {programs.map((prog, i) => {
-              const bgColors = ["bg-emerald-600", "bg-emerald-800", "bg-emerald-950"]
-              const bgColor = bgColors[i % bgColors.length]
+              const IconComp = ICON_MAP[prog.icon] || BookOpen
               
-              const defaultImages = [
-                "https://images.unsplash.com/photo-1609599006352-20c788d7520e?auto=format&fit=crop&q=80&w=800",
-                "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=800",
-                "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800",
-              ]
-              const imgUrl = defaultImages[i % defaultImages.length]
-
               return (
-                <div key={prog.id} className="flex flex-col rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group cursor-pointer reveal reveal-scale">
-                  {/* Bagian Atas (Gambar) */}
-                  <div className="h-64 w-full overflow-hidden">
-                    <img 
-                      src={imgUrl} 
-                      alt={prog.title} 
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
+                <div key={prog.id} className="flex flex-col bg-madrasah-cream rounded-[2rem] p-8 shadow-sm border border-emerald-900/5 hover:shadow-md hover:-translate-y-1 transition-all duration-300 reveal reveal-scale relative overflow-hidden group">
+                  {/* Dekorasi Card */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:bg-white/60 transition-colors"></div>
+                  
+                  {/* Top: Icon & Badge */}
+                  <div className="flex items-start justify-between mb-6 relative z-10">
+                    <div className="w-12 h-12 rounded-2xl bg-white border border-emerald-100 flex items-center justify-center text-emerald-700 shadow-sm">
+                      <IconComp className="w-5 h-5" />
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white border border-amber-100 text-amber-700 text-[10px] font-extrabold uppercase tracking-wider rounded-full shadow-sm">
+                      <Star className="w-3 h-3 fill-amber-500 text-amber-500" /> Unggulan
+                    </span>
                   </div>
 
-                  {/* Bagian Bawah (Blok Warna & Teks) */}
-                  <div className={`${bgColor} flex flex-col p-6 flex-grow`}>
-                    <h3 className="text-white text-lg font-bold leading-snug">
+                  {/* Title & Desc */}
+                  <div className="relative z-10 mb-8">
+                    <h3 className="font-sans text-xl font-extrabold text-emerald-950 leading-snug mb-3">
                       {prog.title}
                     </h3>
-                    
-                    {/* Pembatas Elastis */}
-                    <div className="flex-grow"></div>
-                    
-                    {/* Tautan */}
-                    <div className="mt-8 flex items-center gap-2 text-white/80 text-[11px] font-bold uppercase tracking-wider group-hover:text-amber-400 transition-colors">
-                      Pelajari detail <ArrowRight className="w-3.5 h-3.5" />
-                    </div>
+                    {prog.description && (
+                      <p className="text-sm text-emerald-900/70 leading-relaxed">
+                        {prog.description}
+                      </p>
+                    )}
                   </div>
+
+                  {/* Fokus & Unggulan */}
+                  {prog.focus_points && prog.focus_points.length > 0 && (
+                    <div className="relative z-10 mt-auto pt-6 border-t border-emerald-900/10">
+                      <h4 className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest text-emerald-800 mb-4">
+                        <Award className="w-4 h-4 text-emerald-600" />
+                        Fokus & Keunggulan
+                      </h4>
+                      <ul className="space-y-3">
+                        {prog.focus_points.map((point, idx) => (
+                          <li key={idx} className="flex items-start gap-3">
+                            <div className="mt-0.5 w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                              <svg className="w-2.5 h-2.5 text-emerald-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                            <span className="text-sm text-emerald-900/80 leading-snug">{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )
             })}

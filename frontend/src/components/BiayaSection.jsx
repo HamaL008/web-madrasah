@@ -15,7 +15,7 @@ export default function BiayaSection({ biaya = [] }) {
           <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-800 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3">
             <CreditCard className="w-3.5 h-3.5" /> Transparansi Biaya
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-emerald-950 mb-3">
+          <h2 className="font-sans text-3xl md:text-4xl font-extrabold text-emerald-950 mb-3">
             Rincian Biaya PPDB
           </h2>
           <p className="text-slate-500 text-sm">

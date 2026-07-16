@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useRevealObserver } from '../hooks/useReveal'
 import RunningText from '../components/RunningText'
 import Navbar from '../components/Navbar'
@@ -16,22 +17,43 @@ export default function Home() {
   const [content, setContent]   = useState(null)
   const [galeri, setGaleri]     = useState([])
   const [teachers, setTeachers] = useState([])
+  const [stats, setStats]       = useState(null)
   const [loading, setLoading]   = useState(true)
+  const location = useLocation()
 
   useEffect(() => {
     Promise.all([
       api.get('/content'),
       api.get('/gallery'),
       api.get('/teachers'),
+      api.get('/stats'),
     ])
-      .then(([contentRes, galleryRes, teacherRes]) => {
+      .then(([contentRes, galleryRes, teacherRes, statsRes]) => {
         setContent(contentRes.data)
         setGaleri(galleryRes.data ?? [])
         setTeachers(teacherRes.data ?? [])
+        setStats(statsRes.data ?? null)
       })
       .catch((err) => console.error('Gagal memuat konten:', err))
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (loading) return
+    const params = new URLSearchParams(location.search)
+    const scrollTo = params.get('scrollTo')
+    if (scrollTo) {
+      setTimeout(() => {
+        const target = document.getElementById(scrollTo)
+        if (target) {
+          const headerHeight = 65
+          const targetTop = target.getBoundingClientRect().top + window.scrollY
+          const offset = scrollTo === 'beranda' ? 0 : targetTop - headerHeight
+          window.scrollTo({ top: offset, behavior: 'smooth' })
+        }
+      }, 500)
+    }
+  }, [loading, location.search])
 
   if (loading) {
     return (
@@ -56,7 +78,7 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-[100vw]">
+    <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
       <RunningText text={content.announcement} />
       <Navbar logoName={content.logo_name} />
       <main className="flex-1">
@@ -65,8 +87,12 @@ export default function Home() {
           heroSubtitle={content.hero_subtitle}
           heroBackground={content.hero_background}
           sambutan={content.sambutan}
+          stats={stats}
         />
-        <SambutanSection sambutan={content.sambutan} />
+        <SambutanSection 
+          sambutan={content.sambutan} 
+          sambutanImage={content.sambutan_image}
+        />
         <ProfileSections
           sejarah={content.sejarah}
           visi={content.visi}

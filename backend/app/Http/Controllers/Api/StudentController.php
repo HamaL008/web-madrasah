@@ -25,6 +25,18 @@ class StudentController extends Controller
         $student = Student::create($validated);
         return response()->json($student, 201);
     }
+    public function update(Request $request, Student $student)
+    {
+        $validated = $request->validate([
+            'nisn'   => 'required|string|max:20|unique:students,nisn,' . $student->id,
+            'nama'   => 'required|string|max:255',
+            'kelas'  => 'required|string|max:20',
+            'alamat' => 'required|string',
+        ]);
+
+        $student->update($validated);
+        return response()->json($student);
+    }
 
     public function destroy(Student $student)
     {
