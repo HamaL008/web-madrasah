@@ -124,6 +124,8 @@ export default function PanelContent({ notify }) {
         hero_subtitle:   d.hero_subtitle   ?? '',
         sambutan:        d.sambutan        ?? '',
         sambutan_image:  d.sambutan_image  ?? '',
+        kepala_nama:     d.kepala_nama     ?? '',
+        kepala_jabatan:  d.kepala_jabatan  ?? '',
         sejarah:         d.sejarah         ?? '',
         visi:            d.visi            ?? '',
         misi:            d.misi            ?? [],
@@ -224,6 +226,12 @@ export default function PanelContent({ notify }) {
       <Section title="Hero & Sambutan" subtitle="Judul halaman utama dan kata sambutan kepala madrasah">
         <Field label="Judul Hero" name="hero_title" value={form.hero_title} onChange={handleChange} />
         <Textarea label="Subtitle Hero" name="hero_subtitle" value={form.hero_subtitle} onChange={handleChange} rows={2} />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <Field label="Nama Kepala Madrasah" name="kepala_nama" value={form.kepala_nama} onChange={handleChange} />
+          <Field label="Jabatan (e.g. Kepala Madrasah)" name="kepala_jabatan" value={form.kepala_jabatan} onChange={handleChange} />
+        </div>
+        
         <Textarea label="Sambutan Kepala Madrasah" name="sambutan" value={form.sambutan} onChange={handleChange} rows={5} />
         <ImageUpload 
           label="Foto Kepala Madrasah" 
@@ -267,8 +275,8 @@ export default function PanelContent({ notify }) {
         </div>
       </Section>
 
-      {/* ── 4. Biaya PPDB ── */}
-      <Section title="Biaya PPDB" subtitle="Rincian biaya pendaftaran santri baru">
+      {/* ── 4. Biaya Pendaftaran ── */}
+      <Section title="Biaya Pendaftaran" subtitle="Rincian biaya pendaftaran santri baru">
         <div className="space-y-3">
           {form.biaya.map((fee, i) => (
             <div key={i} className="flex items-center gap-3">

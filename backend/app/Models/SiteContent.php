@@ -8,7 +8,7 @@ class SiteContent extends Model
 {
     protected $fillable = [
         'logo_name', 'announcement', 'hero_title', 'hero_subtitle',
-        'hero_background', 'sambutan', 'sambutan_image', 'sejarah', 'visi',
+        'hero_background', 'sambutan', 'sambutan_image', 'kepala_nama', 'kepala_jabatan', 'sejarah', 'visi',
         'misi', 'kurikulum', 'biaya', 'drive_legalitas', 'galeri',
         'alamat', 'telepon', 'email', 'whatsapp', 'instagram',
     ];

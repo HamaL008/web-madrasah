@@ -7,7 +7,7 @@ const formatRupiah = (n) =>
 
 const inputClass = "block w-full pl-10 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all text-xs md:text-sm"
 
-export default function PPDBForm({ panitiaWa, biaya = [] }) {
+export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
   const [ppdbStatus, setPpdbStatus] = useState(null)
   const [formData, setFormData] = useState({
     nama: '', tempat_lahir: '', tanggal_lahir: '',
@@ -19,7 +19,7 @@ export default function PPDBForm({ panitiaWa, biaya = [] }) {
   const [submittedName, setSubmittedName] = useState('')
 
   useEffect(() => {
-    api.get('/ppdb/status')
+    api.get('/pendaftaran/status')
       .then((res) => setPpdbStatus(res.data))
       .catch(() => setPpdbStatus({ is_active: false, pesan_tutup: 'Gagal memuat status pendaftaran.' }))
   }, [])
@@ -34,7 +34,7 @@ export default function PPDBForm({ panitiaWa, biaya = [] }) {
     setError('')
     setLoading(true)
     try {
-      await api.post('/ppdb', formData)
+      await api.post('/pendaftaran', formData)
       setSubmittedName(formData.nama)
       setFormData({ nama: '', tempat_lahir: '', tanggal_lahir: '', alamat: '', nama_ortu: '', whatsapp: '' })
       setSuccess(true)
@@ -66,7 +66,7 @@ export default function PPDBForm({ panitiaWa, biaya = [] }) {
             
             <div className="relative z-10 flex-1 flex flex-col">
               <div className="inline-flex self-start items-center gap-2 bg-emerald-800/50 text-emerald-200 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-6">
-                PPDB Online {ppdbStatus?.tahun_ajaran ?? ''}
+                Pendaftaran Online {ppdbStatus?.tahun_ajaran ?? ''}
               </div>
               <h2 className="text-3xl md:text-4xl font-extrabold mb-4 leading-tight">
                 Bergabunglah Bersama Generasi Qur'ani
@@ -101,7 +101,7 @@ export default function PPDBForm({ panitiaWa, biaya = [] }) {
                   </div>
                   <div className="mt-4 flex items-start gap-2 text-emerald-200/80 text-[10px] leading-relaxed">
                     <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                    <p>Biaya di atas merupakan rincian awal masuk. Pembayaran dapat diangsur sesuai ketentuan panitia PPDB.</p>
+                    <p>Biaya di atas merupakan rincian awal masuk. Pembayaran dapat diangsur sesuai ketentuan panitia pendaftaran.</p>
                   </div>
                 </div>
               )}
@@ -151,7 +151,7 @@ export default function PPDBForm({ panitiaWa, biaya = [] }) {
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 pt-2">
-                  <a href={`https://wa.me/${panitiaWa}?text=Assalamualaikum%20Panitia%20PPDB%2C%20saya%20ingin%20konfirmasi%20pendaftaran%20atas%20nama%20${encodeURIComponent(submittedName)}`}
+                  <a href={`https://wa.me/${panitiaWa}?text=Assalamualaikum%20Panitia%20Pendaftaran%2C%20saya%20ingin%20konfirmasi%20pendaftaran%20atas%20nama%20${encodeURIComponent(submittedName)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                     <Phone className="w-4 h-4" /> Konfirmasi ke WhatsApp

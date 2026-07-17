@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class PpdbSetting extends Model
+class PendaftaranSetting extends Model
 {
+    protected $table = 'pendaftaran_settings';
+
     protected $fillable = [
         'force_closed',   // true = tutup paksa oleh admin, abaikan tanggal
         'tanggal_buka',

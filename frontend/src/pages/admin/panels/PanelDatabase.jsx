@@ -180,7 +180,7 @@ export default function PanelDatabase({ notify }) {
   const handleTeacherImage = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 2 * 1024 * 1024) return setErr('Ukuran gambar maksimal 2MB.')
+    if (file.size > 5 * 1024 * 1024) return setErr('Ukuran gambar maksimal 5MB.')
     setErr('')
     setTeacherImage(file)
     setTeacherImagePreview(URL.createObjectURL(file))
@@ -341,7 +341,7 @@ export default function PanelDatabase({ notify }) {
               <form id="teacherForm" onSubmit={saveTeacher} className="space-y-4">
                 {/* Upload Foto Dropzone */}
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Foto Profil (Opsional, max 2MB)</label>
+                  <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Foto Profil (Opsional, max 5MB)</label>
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-slate-200 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 hover:border-emerald-500 transition-colors group overflow-hidden relative">
                     {teacherImagePreview ? (
                       <img src={teacherImagePreview} alt="Preview" className="w-full h-full object-cover" />

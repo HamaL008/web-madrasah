@@ -28,7 +28,7 @@ const NAV_LINKS = [
   ['Profil Pendidik',     'pendidik'],
   ['Galeri',              'galeri'],
   ['Berita & Pengumuman', 'berita'],
-  ['Pendaftaran PPDB',    'ppdb'],
+  ['Pendaftaran Santri',  'ppdb'],
 ]
 
 export default function Footer({ logoName, kontak }) {

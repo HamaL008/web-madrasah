@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\SiteContentController;
 use App\Http\Controllers\Api\RegistrantController;
 use App\Http\Controllers\Api\StudentController;
 use App\Http\Controllers\Api\TeacherController;
-use App\Http\Controllers\Api\PpdbSettingController;
+use App\Http\Controllers\Api\PendaftaranSettingController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\ProgramController;
@@ -19,8 +19,8 @@ Route::get('/teachers', [TeacherController::class, 'index']);
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{slug}', [NewsController::class, 'show']);
 Route::get('/programs', [ProgramController::class, 'index']);
-Route::get('/ppdb/status', [PpdbSettingController::class, 'status']);
-Route::post('/ppdb', [RegistrantController::class, 'store']);
+Route::get('/pendaftaran/status', [PendaftaranSettingController::class, 'status']);
+Route::post('/pendaftaran', [RegistrantController::class, 'store']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
 // ─── Protected Admin Routes ───────────────────────────────────
@@ -31,9 +31,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     // Site content
     Route::put('/content', [SiteContentController::class, 'update']);
 
-    // PPDB Setting
-    Route::get('/ppdb-setting', [PpdbSettingController::class, 'show']);
-    Route::put('/ppdb-setting', [PpdbSettingController::class, 'update']);
+    // Pendaftaran Setting
+    Route::get('/pendaftaran-setting', [PendaftaranSettingController::class, 'show']);
+    Route::put('/pendaftaran-setting', [PendaftaranSettingController::class, 'update']);
 
     // Gallery
     Route::post('/gallery',            [GalleryController::class, 'store']);
@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/programs/{program}',       [ProgramController::class, 'update']);
     Route::delete('/programs/{program}',     [ProgramController::class, 'destroy']);
 
-    // PPDB Registrants
+    // Pendaftaran Registrants
     Route::get('/registrants', [RegistrantController::class, 'index']);
     Route::patch('/registrants/{registrant}/status', [RegistrantController::class, 'updateStatus']);
     Route::delete('/registrants/{registrant}', [RegistrantController::class, 'destroy']);

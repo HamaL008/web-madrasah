@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\PpdbSetting;
+use App\Models\PendaftaranSetting;
 use App\Models\Registrant;
 use Illuminate\Http\Request;
 
 class RegistrantController extends Controller
 {
-    // POST /api/ppdb — public form submission
+    // POST /api/pendaftaran — public form submission
     public function store(Request $request)
     {
-        // Cek apakah PPDB sedang aktif
-        $setting = PpdbSetting::first();
+        // Cek apakah pendaftaran sedang aktif
+        $setting = PendaftaranSetting::first();
         if (!$setting || !$setting->isActive()) {
-            $pesan = $setting?->pesan_tutup ?? 'Pendaftaran PPDB saat ini sedang ditutup.';
+            $pesan = $setting?->pesan_tutup ?? 'Pendaftaran saat ini sedang ditutup.';
             return response()->json(['message' => $pesan], 403);
         }
 

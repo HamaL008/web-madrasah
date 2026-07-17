@@ -9,20 +9,20 @@ function formatTanggal(dateStr) {
   })
 }
 
-export default function PanelPPDBSetting({ notify }) {
+export default function PanelPendaftaranSetting({ notify }) {
   const [form, setForm] = useState({
     force_closed:  false,
     tanggal_buka:  '',
     tanggal_tutup: '',
     tahun_ajaran:  '2026/2027',
-    pesan_tutup:   'Pendaftaran PPDB saat ini sedang ditutup. Pantau terus informasi pembukaan pendaftaran berikutnya.',
+    pesan_tutup:   'Pendaftaran saat ini sedang ditutup. Pantau terus informasi pembukaan pendaftaran berikutnya.',
   })
   const [isActive, setIsActive] = useState(false)
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
 
-  useEffect(() => {
-    api.get('/admin/ppdb-setting')
+  const fetchSetting = () => {
+    api.get('/admin/pendaftaran-setting')
       .then((res) => {
         const d = res.data
         if (d) {
@@ -38,6 +38,10 @@ export default function PanelPPDBSetting({ notify }) {
       })
       .catch(() => {})
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchSetting()
   }, [])
 
   const handleChange = (e) => {
@@ -55,10 +59,10 @@ export default function PanelPPDBSetting({ notify }) {
         tanggal_buka:  form.tanggal_buka  || null,
         tanggal_tutup: form.tanggal_tutup || null,
       }
-      const res = await api.put('/admin/ppdb-setting', payload)
+      const res = await api.put('/admin/pendaftaran-setting', payload)
       setIsActive(res.data.is_active ?? false)
       setForm((p) => ({ ...p, force_closed: res.data.force_closed ?? p.force_closed }))
-      notify('Pengaturan PPDB berhasil disimpan!')
+      notify('Pengaturan Pendaftaran berhasil disimpan!')
     } catch (err) {
       const errors = err.response?.data?.errors
       const msg = errors
@@ -114,7 +118,7 @@ export default function PanelPPDBSetting({ notify }) {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-slate-800">Pengaturan Periode PPDB</h1>
+        <h1 className="text-2xl font-extrabold text-slate-800">Pengaturan Periode Pendaftaran</h1>
         <p className="text-slate-500 text-xs mt-1">
           Formulir pendaftaran otomatis buka dan tutup sesuai tanggal yang diatur.
         </p>
@@ -233,7 +237,7 @@ export default function PanelPPDBSetting({ notify }) {
           <p className="text-xs text-slate-500">Ditampilkan kepada calon pendaftar saat PPDB tidak aktif.</p>
           <textarea name="pesan_tutup" value={form.pesan_tutup} onChange={handleChange} rows={3}
             className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-emerald-600 text-sm resize-none"
-            placeholder="Contoh: Pendaftaran PPDB saat ini sedang ditutup. Pantau informasi selanjutnya." />
+            placeholder="Contoh: Pendaftaran saat ini sedang ditutup. Pantau informasi selanjutnya." />
         </div>
 
         <button type="submit" disabled={saving}

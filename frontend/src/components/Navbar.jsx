@@ -86,7 +86,7 @@ export default function Navbar({ logoName }) {
             onClick={() => scrollToSection('ppdb')}
             className="font-sans bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2 rounded-xl text-sm font-bold shadow-md transition-all"
           >
-            PPDB Online
+            Pendaftaran Online
           </button>
         </nav>
 
@@ -121,7 +121,7 @@ export default function Navbar({ logoName }) {
             onClick={() => scrollToSection('ppdb', true)}
             className="bg-amber-400 hover:bg-amber-500 text-emerald-950 px-5 py-2.5 rounded-xl text-center text-sm font-bold block w-full"
           >
-            PPDB Online
+            Pendaftaran Online
           </button>
         </div>
       </div>

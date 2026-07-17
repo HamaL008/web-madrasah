@@ -16,7 +16,7 @@ function useReveal() {
   return ref
 }
 
-export default function SambutanSection({ sambutan, sambutanImage }) {
+export default function SambutanSection({ sambutan, sambutanImage, kepalaNama, kepalaJabatan }) {
   const ref = useReveal()
   if (!sambutan) return null
   return (
@@ -26,7 +26,7 @@ export default function SambutanSection({ sambutan, sambutanImage }) {
           {/* Ilustrasi */}
           <div className="reveal rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-emerald-100 to-emerald-200 aspect-[4/3] flex items-center justify-center relative">
             {sambutanImage ? (
-              <img src={sambutanImage} alt="Kepala Madrasah" className="w-full h-full object-cover" />
+              <img src={sambutanImage} alt="Kepala Madrasah" className="w-full h-full object-cover object-top" />
             ) : (
               <div className="text-center p-8">
                 <div className="w-24 h-24 rounded-full bg-emerald-300/60 mx-auto mb-3 flex items-center justify-center">
@@ -43,8 +43,8 @@ export default function SambutanSection({ sambutan, sambutanImage }) {
           <div className="reveal space-y-4" style={{transitionDelay:"0.15s"}}>
             <div>
               <p className="font-sans text-xs font-extrabold uppercase tracking-widest text-emerald-600 mb-1">Sambutan</p>
-              <h3 className="font-sans text-xl font-extrabold text-emerald-950">Hj. Maryam, S.Pd.I</h3>
-              <p className="text-sm text-emerald-600 font-medium">Kepala Madrasah Miftahul Ulum</p>
+              <h3 className="font-sans text-xl font-extrabold text-emerald-950">{kepalaNama || 'Nama Kepala Madrasah'}</h3>
+              <p className="text-sm text-emerald-600 font-medium">{kepalaJabatan || 'Jabatan'}</p>
             </div>
             <div className="text-slate-600 text-sm leading-relaxed space-y-3 max-h-60 overflow-y-auto pr-1">
               {sambutan.split("\n\n").map((p, i) => <p key={i}>{p}</p>)}

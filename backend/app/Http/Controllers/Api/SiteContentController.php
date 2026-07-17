@@ -43,6 +43,8 @@ class SiteContentController extends Controller
             'hero_background' => 'nullable|string',
             'sambutan'        => 'required|string',
             'sambutan_image'  => 'nullable|string',
+            'kepala_nama'     => 'nullable|string|max:255',
+            'kepala_jabatan'  => 'nullable|string|max:255',
             'sejarah'         => 'required|string',
             'visi'            => 'required|string',
             'misi'            => 'required|array',

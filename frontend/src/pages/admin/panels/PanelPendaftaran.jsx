@@ -54,7 +54,7 @@ function Pagination({ current, total, onPageChange }) {
   )
 }
 
-export default function PanelPPDB({ notify }) {
+export default function PanelPendaftaran({ notify }) {
   const [registrants, setRegistrants] = useState([])
   const [loading, setLoading]         = useState(true)
   const [activeTab, setActiveTab]     = useState('Semua')
@@ -145,9 +145,9 @@ export default function PanelPPDB({ notify }) {
     })
     const ws = XLSX.utils.json_to_sheet(data)
     const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'PPDB')
+    XLSX.utils.book_append_sheet(wb, ws, 'Pendaftar')
     const suffix = activeTab !== 'Semua' ? `_${activeTab}` : ''
-    XLSX.writeFile(wb, `Pendaftar_PPDB${suffix}_${new Date().getFullYear()}.xlsx`)
+    XLSX.writeFile(wb, `Data_Pendaftar${suffix}_${new Date().getFullYear()}.xlsx`)
     notify('File Excel berhasil diunduh.')
   }
 
@@ -156,7 +156,7 @@ export default function PanelPPDB({ notify }) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-800">Daftar Pendaftar PPDB</h1>
+          <h1 className="text-2xl font-extrabold text-slate-800">Daftar Pendaftar</h1>
           <p className="text-slate-500 text-xs mt-1">Kelola dan verifikasi formulir calon santri baru.</p>
         </div>
         <button onClick={exportExcel}

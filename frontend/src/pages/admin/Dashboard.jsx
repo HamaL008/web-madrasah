@@ -7,18 +7,18 @@ import {
 import logoImg from '../../assets/logo.png'
 import api from '../../api/axios'
 import PanelOverview from './panels/PanelOverview'
-import PanelPPDB from './panels/PanelPPDB'
+import PanelPendaftaran from './panels/PanelPendaftaran'
 import PanelDatabase from './panels/PanelDatabase'
 import PanelContent from './panels/PanelContent'
-import PanelPPDBSetting from './panels/PanelPPDBSetting'
+import PanelPendaftaranSetting from './panels/PanelPendaftaranSetting'
 import PanelGallery from './panels/PanelGallery'
 import PanelNews from './panels/PanelNews'
 import PanelProgram from './panels/PanelProgram'
 
 const navItems = [
   { key: 'overview',      label: 'Ringkasan Data',      icon: LayoutDashboard },
-  { key: 'ppdb',          label: 'Pendaftar PPDB',       icon: UserCheck },
-  { key: 'ppdb-setting',  label: 'Periode PPDB',         icon: Settings },
+  { key: 'pendaftaran',          label: 'Pendaftaran',       icon: UserCheck },
+  { key: 'pendaftaran-setting',  label: 'Periode Pendaftaran',         icon: Settings },
   { key: 'gallery',       label: 'Kelola Galeri',        icon: Images },
   { key: 'news',          label: 'Kelola Berita',        icon: BookOpen },
   { key: 'program',       label: 'Kelola Program',       icon: Award },
@@ -77,7 +77,7 @@ export default function Dashboard() {
             }`}>
             <Icon className="w-4 h-4 shrink-0" />
             {label}
-            {key === 'ppdb' && pendingCount > 0 && (
+            {key === 'pendaftaran' && pendingCount > 0 && (
               <span className="ml-auto bg-red-500 text-white font-extrabold text-[9px] px-2 py-0.5 rounded-full">
                 {pendingCount}
               </span>
@@ -165,8 +165,8 @@ export default function Dashboard() {
         {/* Main content */}
         <main className="flex-1 p-6 md:p-10 overflow-y-auto">
           {activePanel === 'overview'      && <PanelOverview onNavigate={selectPanel} notify={triggerNotification} />}
-          {activePanel === 'ppdb'          && <PanelPPDB notify={triggerNotification} />}
-          {activePanel === 'ppdb-setting'  && <PanelPPDBSetting notify={triggerNotification} />}
+          {activePanel === 'pendaftaran'          && <PanelPendaftaran notify={triggerNotification} />}
+          {activePanel === 'pendaftaran-setting'  && <PanelPendaftaranSetting notify={triggerNotification} />}
           {activePanel === 'gallery'       && <PanelGallery notify={triggerNotification} />}
           {activePanel === 'news'          && <PanelNews notify={triggerNotification} />}
           {activePanel === 'program'       && <PanelProgram notify={triggerNotification} />}

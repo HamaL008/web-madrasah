@@ -13,11 +13,13 @@ class SiteContentSeeder extends Seeder
             ['id' => 1],
             [
                 'logo_name'    => 'Madrasah Miftahul Ulum',
-                'announcement' => 'Penerimaan Santri Baru (PPDB) Madrasah Miftahul Ulum Tahun Ajaran 2026/2027 Telah Resmi Dibuka!',
+                'announcement' => 'Pendaftaran Santri Baru Madrasah Miftahul Ulum Tahun Ajaran 2026/2027 Telah Resmi Dibuka!',
                 'hero_title'   => "Membentuk Generasi Qur'ani, Berakhlak Mulia, dan Unggul",
                 'hero_subtitle' => 'Madrasah Miftahul Ulum di bawah naungan Yayasan Pondok Pesantren Hikmatul Furqon. Memadukan kurikulum Kemenag dengan khazanah pesantren salaf.',
                 'hero_background' => '',
                 'sambutan'     => "Assalamu'alaikum Wr. Wb.\n\nPuji syukur senantiasa kita panjatkan kepada Allah SWT atas segala limpahan rahmat-Nya. Selamat datang di portal resmi Madrasah Miftahul Ulum.\n\nWassalamu'alaikum Wr. Wb.",
+                'kepala_nama'  => 'Hj. Maryam, S.Pd.I',
+                'kepala_jabatan' => 'Kepala Madrasah Miftahul Ulum',
                 'sejarah'      => 'Madrasah Miftahul Ulum didirikan pada tahun 2012 atas inisiasi para tokoh masyarakat dan dipimpin langsung di bawah naungan Yayasan Pondok Pesantren Hikmatul Furqon.',
                 'visi'         => "Terwujudnya Generasi Qur'ani yang Berakhlak Mulia, Cerdas, Mandiri, dan Unggul dalam Prestasi.",
                 'misi'         => [

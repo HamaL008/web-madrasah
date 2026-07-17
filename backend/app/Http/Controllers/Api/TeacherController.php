@@ -23,7 +23,7 @@ class TeacherController extends Controller
             'mapel'   => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'quotes'  => 'nullable|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
         ]);
 
         $imagePath = null;
@@ -53,7 +53,7 @@ class TeacherController extends Controller
             'mapel'   => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
             'quotes'  => 'nullable|string',
-            'image'   => 'nullable|image|max:2048',
+            'image'   => 'nullable|image|max:5120',
         ]);
 
         if ($request->hasFile('image')) {

@@ -8,7 +8,7 @@ import ProfileSections from '../components/ProfileSections'
 import NewsSection from '../components/NewsSection'
 import BiayaSection from '../components/BiayaSection'
 import SambutanSection from '../components/SambutanSection'
-import PPDBForm from '../components/PPDBForm'
+import PendaftaranForm from '../components/PendaftaranForm'
 import Footer from '../components/Footer'
 import api from '../api/axios'
 
@@ -78,10 +78,10 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+    <div className="flex flex-col min-h-screen w-full">
       <RunningText text={content.announcement} />
       <Navbar logoName={content.logo_name} />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
         <Hero
           heroTitle={content.hero_title}
           heroSubtitle={content.hero_subtitle}
@@ -92,6 +92,8 @@ export default function Home() {
         <SambutanSection 
           sambutan={content.sambutan} 
           sambutanImage={content.sambutan_image}
+          kepalaNama={content.kepala_nama}
+          kepalaJabatan={content.kepala_jabatan}
         />
         <ProfileSections
           sejarah={content.sejarah}
@@ -104,7 +106,7 @@ export default function Home() {
           teachers={teachers}
         />
         <NewsSection />
-        <PPDBForm panitiaWa={content.whatsapp} biaya={content.biaya ?? []} />
+        <PendaftaranForm panitiaWa={content.whatsapp} biaya={content.biaya ?? []} />
       </main>
       <Footer logoName={content.logo_name} kontak={kontak} />
     </div>

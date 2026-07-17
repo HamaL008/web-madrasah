@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\PpdbSetting;
+use App\Models\PendaftaranSetting;
 use Illuminate\Http\Request;
 
-class PpdbSettingController extends Controller
+class PendaftaranSettingController extends Controller
 {
-    private function formatSetting(PpdbSetting $s): array
+    private function formatSetting(PendaftaranSetting $s): array
     {
         return [
             'id'            => $s->id,
@@ -25,10 +25,10 @@ class PpdbSettingController extends Controller
         ];
     }
 
-    // GET /api/ppdb/status — public
+    // GET /api/pendaftaran/status — public
     public function status()
     {
-        $setting = PpdbSetting::first();
+        $setting = PendaftaranSetting::first();
 
         if (!$setting) {
             return response()->json([
@@ -37,7 +37,7 @@ class PpdbSettingController extends Controller
                 'tanggal_buka'  => null,
                 'tanggal_tutup' => null,
                 'tahun_ajaran'  => null,
-                'pesan_tutup'   => 'Pendaftaran PPDB belum dikonfigurasi.',
+                'pesan_tutup'   => 'Pendaftaran belum dikonfigurasi.',
             ]);
         }
 
@@ -51,20 +51,20 @@ class PpdbSettingController extends Controller
                                 ? substr($setting->getRawOriginal('tanggal_tutup'), 0, 10)
                                 : null,
             'tahun_ajaran'  => $setting->tahun_ajaran,
-            'pesan_tutup'   => $setting->pesan_tutup ?? 'Pendaftaran PPDB saat ini sedang ditutup.',
+            'pesan_tutup'   => $setting->pesan_tutup ?? 'Pendaftaran saat ini sedang ditutup.',
         ]);
     }
 
-    // GET /api/admin/ppdb-setting — protected
+    // GET /api/admin/pendaftaran-setting — protected
     public function show()
     {
-        $setting = PpdbSetting::first();
+        $setting = PendaftaranSetting::first();
         return $setting
             ? response()->json($this->formatSetting($setting))
             : response()->json(null);
     }
 
-    // PUT /api/admin/ppdb-setting — protected
+    // PUT /api/admin/pendaftaran-setting — protected
     public function update(Request $request)
     {
         $validated = $request->validate([
@@ -75,11 +75,11 @@ class PpdbSettingController extends Controller
             'pesan_tutup'   => 'nullable|string|max:500',
         ]);
 
-        $setting = PpdbSetting::first();
+        $setting = PendaftaranSetting::first();
         if ($setting) {
             $setting->update($validated);
         } else {
-            $setting = PpdbSetting::create($validated);
+            $setting = PendaftaranSetting::create($validated);
         }
 
         return response()->json($this->formatSetting($setting));
