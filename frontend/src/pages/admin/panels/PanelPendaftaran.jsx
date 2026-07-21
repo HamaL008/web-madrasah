@@ -91,7 +91,8 @@ export default function PanelPendaftaran({ notify }) {
         r.nama?.toLowerCase().includes(q) ||
         r.nama_ortu?.toLowerCase().includes(q) ||
         r.whatsapp?.includes(q) ||
-        r.alamat?.toLowerCase().includes(q)
+        r.alamat?.toLowerCase().includes(q) ||
+        r.asal_sekolah?.toLowerCase().includes(q)
       )
     }
     return list
@@ -137,8 +138,8 @@ export default function PanelPendaftaran({ notify }) {
         : '-';
       
       return {
-        'No': i + 1, 'Nama': r.nama, 'Tempat Lahir': r.tempat_lahir,
-        'Tanggal Lahir': r.tanggal_lahir, 'Alamat': r.alamat,
+        'No': i + 1, 'Nama': r.nama, 'Jenis Kelamin': r.jenis_kelamin, 'Tempat Lahir': r.tempat_lahir,
+        'Tanggal Lahir': r.tanggal_lahir, 'Asal Sekolah': r.asal_sekolah, 'Jenjang': r.jenjang, 'Alamat': r.alamat,
         'Orang Tua': r.nama_ortu, 'WhatsApp': r.whatsapp, 'Status': r.status,
         'Tanggal Daftar': formattedDate,
       };
@@ -209,17 +210,17 @@ export default function PanelPendaftaran({ notify }) {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-500 uppercase font-bold text-[10px] border-b border-slate-200">
               <tr>
-                {['Tanggal Daftar', 'Nama', 'TTL', 'Orang Tua', 'WhatsApp', 'Status', 'Aksi'].map((h) => (
+                {['Tanggal Daftar', 'Nama', 'L/P', 'TTL', 'Orang Tua', 'WhatsApp', 'Status', 'Aksi'].map((h) => (
                   <th key={h} className="px-4 py-3">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {loading ? (
-                <tr><td colSpan={7} className="p-10 text-center text-slate-400">Memuat data...</td></tr>
+                <tr><td colSpan={8} className="p-10 text-center text-slate-400">Memuat data...</td></tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center">
+                  <td colSpan={8} className="p-10 text-center">
                     <div className="flex flex-col items-center justify-center gap-3 text-slate-400">
                       <FileQuestion className="w-10 h-10 text-slate-300" />
                       <p className="text-sm">
@@ -234,6 +235,7 @@ export default function PanelPendaftaran({ notify }) {
                     {reg.created_at?.slice(0, 16).replace('T', ' ')}
                   </td>
                   <td className="px-4 py-3.5 font-bold text-slate-800">{reg.nama}</td>
+                  <td className="px-4 py-3.5 text-slate-500 font-bold">{reg.jenis_kelamin}</td>
                   <td className="px-4 py-3.5 text-slate-600">{reg.tempat_lahir}, {reg.tanggal_lahir}</td>
                   <td className="px-4 py-3.5 text-slate-600">{reg.nama_ortu}</td>
                   <td className="px-4 py-3.5">

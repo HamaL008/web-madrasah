@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { User, MapPin, Calendar, Phone, Users, Send, CheckCircle, AlertCircle, Clock, Lock, CreditCard, Info, ArrowRight } from 'lucide-react'
+import { User, MapPin, Calendar, Phone, Users, Send, CheckCircle, AlertCircle, Clock, Lock, CreditCard, Info, ArrowRight, Search, Building } from 'lucide-react'
 import api from '../api/axios'
 
 const formatRupiah = (n) =>
@@ -8,15 +8,26 @@ const formatRupiah = (n) =>
 const inputClass = "block w-full pl-10 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 transition-all text-xs md:text-sm"
 
 export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
+  const formattedWa = panitiaWa ? panitiaWa.replace(/[^0-9]/g, '').replace(/^0/, '62') : '';
+
   const [ppdbStatus, setPpdbStatus] = useState(null)
+  const [activeTab, setActiveTab] = useState('daftar')
+  
+  // State Daftar
   const [formData, setFormData] = useState({
-    nama: '', tempat_lahir: '', tanggal_lahir: '',
-    alamat: '', nama_ortu: '', whatsapp: ''
+    nama: '', jenis_kelamin: 'L', tempat_lahir: '', tanggal_lahir: '',
+    alamat: '', asal_sekolah: '', nama_ortu: '', whatsapp: ''
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [submittedName, setSubmittedName] = useState('')
+
+  // State Cek Status
+  const [cekWa, setCekWa] = useState('')
+  const [cekResult, setCekResult] = useState(null)
+  const [cekLoading, setCekLoading] = useState(false)
+  const [cekError, setCekError] = useState('')
 
   useEffect(() => {
     api.get('/pendaftaran/status')
@@ -36,13 +47,28 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
     try {
       await api.post('/pendaftaran', formData)
       setSubmittedName(formData.nama)
-      setFormData({ nama: '', tempat_lahir: '', tanggal_lahir: '', alamat: '', nama_ortu: '', whatsapp: '' })
+      setFormData({ nama: '', jenis_kelamin: 'L', tempat_lahir: '', tanggal_lahir: '', alamat: '', asal_sekolah: '', nama_ortu: '', whatsapp: '' })
       setSuccess(true)
     } catch (err) {
       const msg = err.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.'
       setError(msg)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleCekStatus = async (e) => {
+    e.preventDefault()
+    setCekError('')
+    setCekResult(null)
+    setCekLoading(true)
+    try {
+      const res = await api.get(`/pendaftaran/cek-status?whatsapp=${cekWa}`)
+      setCekResult(res.data)
+    } catch (err) {
+      setCekError(err.response?.data?.message || 'Terjadi kesalahan saat mengecek status.')
+    } finally {
+      setCekLoading(false)
     }
   }
 
@@ -108,9 +134,25 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
             </div>
           </div>
 
-          {/* KOLOM KANAN: Form */}
+          {/* KOLOM KANAN: Form & Cek Status */}
           <div className="w-full lg:w-7/12 p-8 md:p-12 lg:p-16 bg-white relative">
-            <h3 className="text-2xl font-extrabold text-emerald-950 mb-8">Formulir Pendaftaran</h3>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+              <h3 className="text-2xl font-extrabold text-emerald-950">Portal PPDB</h3>
+              <div className="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
+                <button 
+                  onClick={() => setActiveTab('daftar')}
+                  className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'daftar' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Daftar Baru
+                </button>
+                <button 
+                  onClick={() => setActiveTab('cek')}
+                  className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-lg transition-all ${activeTab === 'cek' ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  Cek Status
+                </button>
+              </div>
+            </div>
             
             {/* Loading status */}
             {ppdbStatus === null && (
@@ -120,7 +162,7 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
             )}
 
             {/* PPDB DITUTUP */}
-            {ppdbStatus !== null && !ppdbStatus.is_active && (
+            {ppdbStatus !== null && !ppdbStatus.is_active && activeTab === 'daftar' && (
               <div className="bg-slate-50 border border-slate-200 p-8 rounded-3xl text-center space-y-4">
                 <div className="inline-flex items-center justify-center bg-slate-200 text-slate-500 p-4 rounded-full">
                   <Lock className="w-8 h-8" />
@@ -131,15 +173,74 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
                     {ppdbStatus.pesan_tutup}
                   </p>
                 </div>
-                <a href={`https://wa.me/${panitiaWa}`} target="_blank" rel="noopener noreferrer"
+                <a href={`https://wa.me/${formattedWa}`} target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all mt-2">
                   <Phone className="w-4 h-4" /> Hubungi Panitia via WhatsApp
                 </a>
               </div>
             )}
 
+            {/* TAB: CEK STATUS */}
+            {ppdbStatus !== null && activeTab === 'cek' && (
+              <div className="space-y-5 animate-fade-in">
+                <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl">
+                  <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">
+                    Masukkan Nomor WhatsApp yang Didaftarkan
+                  </label>
+                  <form onSubmit={handleCekStatus} className="flex flex-col sm:flex-row gap-3">
+                    <div className="relative flex-1">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Search className="w-4 h-4" />
+                      </div>
+                      <input type="tel" value={cekWa} onChange={(e) => setCekWa(e.target.value)}
+                        placeholder="Contoh: 081234567890" className={inputClass} required />
+                    </div>
+                    <button type="submit" disabled={cekLoading}
+                      className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-6 py-3 rounded-xl transition-all disabled:opacity-50">
+                      {cekLoading ? 'Mencari...' : 'Cek Status'}
+                    </button>
+                  </form>
+                </div>
+
+                {cekError && (
+                  <div className="bg-red-50 border border-red-200 p-4 rounded-xl text-xs text-red-700 flex items-start gap-2.5">
+                    <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                    <span className="font-medium">{cekError}</span>
+                  </div>
+                )}
+
+                {cekResult && (
+                  <div className="bg-white border border-slate-200 shadow-sm p-6 rounded-2xl space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Nama Pendaftar</p>
+                        <p className="font-extrabold text-slate-800 text-lg">{cekResult.nama}</p>
+                      </div>
+                      <div className={`px-4 py-2 rounded-lg text-xs font-bold ${
+                        cekResult.status === 'Diverifikasi' ? 'bg-emerald-100 text-emerald-800' :
+                        cekResult.status === 'Ditolak' ? 'bg-red-100 text-red-800' :
+                        'bg-amber-100 text-amber-800'
+                      }`}>
+                        {cekResult.status}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Jenjang</p>
+                        <p className="font-bold text-slate-700 text-sm">{cekResult.jenjang}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tanggal Daftar</p>
+                        <p className="font-bold text-slate-700 text-sm">{formatTanggal(cekResult.created_at)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* PPDB AKTIF — Success state */}
-            {ppdbStatus !== null && ppdbStatus.is_active && success && (
+            {ppdbStatus !== null && ppdbStatus.is_active && success && activeTab === 'daftar' && (
               <div className="bg-emerald-50 border border-emerald-200 p-8 rounded-3xl text-center space-y-5 animate-fade-in">
                 <div className="inline-flex items-center justify-center bg-emerald-600 text-white p-3 rounded-full">
                   <CheckCircle className="w-10 h-10" />
@@ -151,7 +252,7 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 pt-2">
-                  <a href={`https://wa.me/${panitiaWa}?text=Assalamualaikum%20Panitia%20Pendaftaran%2C%20saya%20ingin%20konfirmasi%20pendaftaran%20atas%20nama%20${encodeURIComponent(submittedName)}`}
+                  <a href={`https://wa.me/${formattedWa}?text=Assalamualaikum%20Panitia%20Pendaftaran%2C%20saya%20ingin%20konfirmasi%20pendaftaran%20atas%20nama%20${encodeURIComponent(submittedName)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-3 rounded-xl text-sm flex items-center justify-center gap-2">
                     <Phone className="w-4 h-4" /> Konfirmasi ke WhatsApp
@@ -165,8 +266,8 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
             )}
 
             {/* PPDB AKTIF — Form */}
-            {ppdbStatus !== null && ppdbStatus.is_active && !success && (
-              <form onSubmit={handleSubmit} className="space-y-5">
+            {ppdbStatus !== null && ppdbStatus.is_active && !success && activeTab === 'daftar' && (
+              <form onSubmit={handleSubmit} className="space-y-5 animate-fade-in">
                 
                 {/* Info Periode */}
                 {ppdbStatus.tanggal_tutup && (
@@ -191,6 +292,29 @@ export default function PendaftaranForm({ panitiaWa, biaya = [] }) {
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><User className="w-4 h-4" /></div>
                     <input type="text" name="nama" value={formData.nama} onChange={handleChange}
                       placeholder="Contoh: Muhammad Rayhan" className={inputClass} required />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">
+                      Jenis Kelamin <span className="text-red-500">*</span>
+                    </label>
+                    <select name="jenis_kelamin" value={formData.jenis_kelamin} onChange={handleChange}
+                      className={inputClass} required>
+                      <option value="L">Laki-laki</option>
+                      <option value="P">Perempuan</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">
+                      Asal Sekolah <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400"><Building className="w-4 h-4" /></div>
+                      <input type="text" name="asal_sekolah" value={formData.asal_sekolah} onChange={handleChange}
+                        placeholder="Contoh: SD Negeri 1 Bogor" className={inputClass} required />
+                    </div>
                   </div>
                 </div>
 

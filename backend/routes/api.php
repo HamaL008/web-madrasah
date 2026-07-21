@@ -20,6 +20,7 @@ Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{slug}', [NewsController::class, 'show']);
 Route::get('/programs', [ProgramController::class, 'index']);
 Route::get('/pendaftaran/status', [PendaftaranSettingController::class, 'status']);
+Route::get('/pendaftaran/cek-status', [RegistrantController::class, 'cekStatus']);
 Route::post('/pendaftaran', [RegistrantController::class, 'store']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
